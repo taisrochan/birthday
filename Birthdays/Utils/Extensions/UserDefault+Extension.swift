@@ -1,0 +1,36 @@
+//
+//  UserDefault+Extension.swift
+//  Birthdays
+//
+//  Created by Tais Rocha Nogueira on 20/07/23.
+//
+
+import Foundation
+
+extension UserDefaults {
+    private enum UserDefaultsKeys: String {
+        case hasOnboarded
+        case birthdayListSaved
+    }
+    
+    var hasOnboarded: Bool {
+        get {
+            bool(forKey: UserDefaultsKeys.hasOnboarded.rawValue)
+        }
+        set {
+            setValue(newValue, forKey: UserDefaultsKeys.hasOnboarded.rawValue)
+        }
+    }
+    
+//    var birthdatListSaved: Codable {
+//        get {
+//            guard
+//                let data = UserDefaults.standard.data(forKey: birthdayKey),
+//                let savedItems = try? JSONDecoder().decode([BirthdayListModel].self, from: data)
+//            else {
+//                return
+//            }
+            
+        }
+    
+
