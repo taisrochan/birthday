@@ -13,7 +13,6 @@ extension UserDefaults {
         case hasOnboarded
         case birthdayListSaved
     }
-    
     var hasOnboarded: Bool {
         get {
             bool(forKey: UserDefaultsKeys.hasOnboarded.rawValue)
