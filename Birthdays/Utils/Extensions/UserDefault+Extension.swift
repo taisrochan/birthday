@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 extension UserDefaults {
     private enum UserDefaultsKeys: String {
@@ -22,15 +23,33 @@ extension UserDefaults {
         }
     }
     
-//    var birthdatListSaved: Codable {
-//        get {
-//            guard
-//                let data = UserDefaults.standard.data(forKey: birthdayKey),
-//                let savedItems = try? JSONDecoder().decode([BirthdayListModel].self, from: data)
-//            else {
-//                return
-//            }
-            
-        }
+    //    var birthdatListSaved: Codable {
+    //        get {
+    //            guard
+    //                let data = UserDefaults.standard.data(forKey: birthdayKey),
+    //                let savedItems = try? JSONDecoder().decode([BirthdayListModel].self, from: data)
+    //            else {
+    //                return
+    //            }
     
+}
+
+extension UserDefaults {
+    func imageArray(forKey key: String) -> [UIImage]? {
+        guard let array = self.array(forKey: key) as? [Data] else {
+            return nil
+        }
+        let imageArray = array.compactMap({
+            UIImage(data: $0)
+        })
+        return imageArray
+    }
+
+    func set(_ imageArray: [UIImage], forKey key: String) {
+        let imageDataArray = imageArray.compactMap {
+            $0.pngData
+        }
+        self.set(imageDataArray, forKey: key)
+    }
+}
 

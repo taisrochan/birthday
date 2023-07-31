@@ -9,6 +9,7 @@ import UIKit
 struct BirthdayListModel: Codable {
     let name: String
     let birthdayDate: String
+    let identifier: String
 }
 
 // criar ela e colocar na tela (UItableView)
@@ -146,8 +147,10 @@ extension ViewController: UITableViewDataSource {
 }
 
 extension ViewController: BirthdayDataViewControllerDelegate {
-    func passBirthdayInfo(name: String, birthday: String) {
-        let newBirthday = BirthdayListModel(name: name, birthdayDate: birthday)
+    func passBirthdayInfo(name: String, birthday: String, id: String) {
+        let newBirthday = BirthdayListModel(name: name,
+                                            birthdayDate: birthday,
+                                            identifier: id)
         birthdayData.append(newBirthday)
         tableView.reloadData()
         verifyIfThereIsValueOnTableView()
