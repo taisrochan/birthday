@@ -10,7 +10,7 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-    var controller: ViewController?
+    var controller: HomeViewController?
 
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
@@ -25,7 +25,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         var controller: UIViewController
         if UserDefaults.standard.hasOnboarded {
-            let birthdayController = ViewController()
+            let birthdayController = HomeViewController()
             let navigationController = UINavigationController(rootViewController: birthdayController)
             controller = navigationController
         } else {

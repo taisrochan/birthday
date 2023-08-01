@@ -18,7 +18,7 @@ class WelcomeViewController: UIViewController {
         guard let window = UIApplication.shared.keyWindow else {
             return
         }
-        let controller = ViewController()
+        let controller = HomeViewController()
         let navigationController = UINavigationController(rootViewController: controller)
         
         window.rootViewController? = navigationController

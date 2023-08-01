@@ -9,15 +9,19 @@ import UIKit
 
 protocol BirthdayDataViewControllerDelegate {
     func passBirthdayInfo(name: String, birthday: String, id: String)
+    func editBirthdayInfo(name: String, birthday: String, id: String)
 }
 
-class BirthdayDataViewController: UIViewController {
+class BirthdayDataManagerViewController: UIViewController {
     @IBOutlet weak var personTextField: UITextField!
     @IBOutlet weak var dateTextField: UITextField!
     @IBOutlet weak var saveButton: UIButton!
     @IBOutlet weak var addPhoto1: UIImageView!
     @IBOutlet weak var addPhoto2: UIImageView!
     @IBOutlet weak var addPhoto3: UIImageView!
+    @IBOutlet weak var addPhotoButton3: UIButton!
+    @IBOutlet weak var addPhotoButton2: UIButton!
+    @IBOutlet weak var addPhotoButton1: UIButton!
     
     init(birthdayModel: BirthdayListModel? = nil) {
         self.birthdayModel = birthdayModel
@@ -36,6 +40,8 @@ class BirthdayDataViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         saveButton.isEnabled = false
+        saveButton.setTitleColor(.white, for: .normal)
+        saveButton.setTitleColor(.white, for: .disabled)
         personTextField.addTarget(self,
                                   action: #selector(textFieldDidChange(_:)),
                                   for: .editingChanged)
@@ -53,15 +59,37 @@ class BirthdayDataViewController: UIViewController {
             imageView.contentMode = .scaleAspectFit
             imageView.layer.cornerRadius = 10
         }
-        
-        if birthdayModel != nil {
-            personTextField.text = birthdayModel?.name
-            personTextField.isEnabled = false
-            dateTextField.text = birthdayModel?.birthdayDate
-            dateTextField.isEnabled = false
-            saveButton.isEnabled = false
-            getPicture()
+        configScreenIfIsEditingBirthday()
+    }
+    
+    func configScreenIfIsEditingBirthday() {
+        guard let model = birthdayModel else {
+            return
         }
+        saveButton.backgroundColor = .gray
+        personTextField.text = model.name
+        personTextField.isEnabled = false
+        dateTextField.text = model.birthdayDate
+        dateTextField.isEnabled = false
+        saveButton.isEnabled = false
+        addPhotoButton1.isEnabled = false
+        addPhotoButton2.isEnabled = false
+        addPhotoButton3.isEnabled = false
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Editar",
+                                                            style: .plain,
+                                                            target: self,
+                                                            action: #selector(editarDetalhes))
+        getPicture()
+    }
+    
+    @objc func editarDetalhes() {
+        saveButton.backgroundColor = .orange
+        personTextField.isEnabled = true
+        dateTextField.isEnabled = true
+        saveButton.isEnabled = true
+        addPhotoButton1.isEnabled = true
+        addPhotoButton2.isEnabled = true
+        addPhotoButton3.isEnabled = true
     }
     
     func getPicture() {
@@ -79,7 +107,6 @@ class BirthdayDataViewController: UIViewController {
                 addPhoto3.image = images[2]
                 addPhoto3.contentMode = .scaleAspectFill
             }
-            
         }
     }
     
@@ -106,10 +133,14 @@ class BirthdayDataViewController: UIViewController {
     @IBAction func saveButtonPressed(_ sender: UIButton) {
         let name = personTextField.text ?? ""
         let birthday = dateTextField.text ?? ""
-        let id = UUID().uuidString
-        delegate?.passBirthdayInfo(name: name, birthday: birthday, id: id)
-        
-        UserDefaults.standard.set(images, forKey: id)
+        if let model = birthdayModel {
+            UserDefaults.standard.set(images, forKey: model.identifier)
+            delegate?.editBirthdayInfo(name: name, birthday: birthday, id: model.identifier)
+        } else {
+            let id = UUID().uuidString
+            delegate?.passBirthdayInfo(name: name, birthday: birthday, id: id)
+            UserDefaults.standard.set(images, forKey: id)
+        }
         navigationController?.popViewController(animated: true)
     }
     
@@ -155,11 +186,13 @@ class BirthdayDataViewController: UIViewController {
     }
     
     @IBAction func addImage(_ sender: UIButton) {
+        let sender = sender
         addPhoto()
+        
     }
 }
 
-extension BirthdayDataViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+extension BirthdayDataManagerViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         picker.dismiss(animated: true, completion: nil)
