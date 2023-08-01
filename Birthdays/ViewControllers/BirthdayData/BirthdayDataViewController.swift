@@ -12,38 +12,74 @@ protocol BirthdayDataViewControllerDelegate {
 }
 
 class BirthdayDataViewController: UIViewController {
-    @IBOutlet weak var birthdayPerson: UITextField!
-    @IBOutlet weak var birthdayDate: UITextField!
+    @IBOutlet weak var personTextField: UITextField!
+    @IBOutlet weak var dateTextField: UITextField!
     @IBOutlet weak var saveButton: UIButton!
     @IBOutlet weak var addPhoto1: UIImageView!
     @IBOutlet weak var addPhoto2: UIImageView!
     @IBOutlet weak var addPhoto3: UIImageView!
     
+    init(birthdayModel: BirthdayListModel? = nil) {
+        self.birthdayModel = birthdayModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     let datePicker = UIDatePicker()
     var delegate: BirthdayDataViewControllerDelegate?
-    
+    let birthdayModel: BirthdayListModel?
     var images: [UIImage] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
         saveButton.isEnabled = false
-        birthdayPerson.addTarget(self,
-                                 action: #selector(textFieldDidChange(_:)),
-                                 for: .editingChanged)
-        birthdayDate.addTarget(self,
-                               action: #selector(textFieldDidChange(_:)),
-                               for: .editingChanged)
-        birthdayDate.clearButtonMode = .always
+        personTextField.addTarget(self,
+                                  action: #selector(textFieldDidChange(_:)),
+                                  for: .editingChanged)
+        dateTextField.addTarget(self,
+                                action: #selector(textFieldDidChange(_:)),
+                                for: .editingChanged)
+        dateTextField.clearButtonMode = .always
         
         createDatePicker()
-
+        
         _ = UITapGestureRecognizer(target: self,
-                                                action: #selector(closeKeyboard))
+                                   action: #selector(closeKeyboard))
         
         [addPhoto1, addPhoto2, addPhoto3].forEach { imageView in
             imageView.contentMode = .scaleAspectFit
             imageView.layer.cornerRadius = 10
+        }
+        
+        if birthdayModel != nil {
+            personTextField.text = birthdayModel?.name
+            personTextField.isEnabled = false
+            dateTextField.text = birthdayModel?.birthdayDate
+            dateTextField.isEnabled = false
+            saveButton.isEnabled = false
+            getPicture()
+        }
+    }
+    
+    func getPicture() {
+        if let model = birthdayModel {
+            let images = UserDefaults.standard.imageArray(forKey: model.identifier) ?? []
+            if images.indices.contains(0) {
+                addPhoto1.image = images[0]
+                addPhoto1.contentMode = .scaleAspectFill
+            }
+            if images.indices.contains(1) {
+                addPhoto2.image = images[1]
+                addPhoto2.contentMode = .scaleAspectFill
+            }
+            if images.indices.contains(2) {
+                addPhoto3.image = images[2]
+                addPhoto3.contentMode = .scaleAspectFill
+            }
+            
         }
     }
     
@@ -58,8 +94,8 @@ class BirthdayDataViewController: UIViewController {
     }
     
     func verifyTxt() {
-        let person = birthdayPerson.text ?? ""
-        let birthday = birthdayDate.text ?? ""
+        let person = personTextField.text ?? ""
+        let birthday = dateTextField.text ?? ""
         if person.isEmpty || birthday.isEmpty {
             saveButton.isEnabled = false
         } else {
@@ -68,8 +104,8 @@ class BirthdayDataViewController: UIViewController {
     }
     
     @IBAction func saveButtonPressed(_ sender: UIButton) {
-        let name = birthdayPerson.text ?? ""
-        let birthday = birthdayDate.text ?? ""
+        let name = personTextField.text ?? ""
+        let birthday = dateTextField.text ?? ""
         let id = UUID().uuidString
         delegate?.passBirthdayInfo(name: name, birthday: birthday, id: id)
         
@@ -91,21 +127,21 @@ class BirthdayDataViewController: UIViewController {
     func createDatePicker() {
         datePicker.preferredDatePickerStyle = .wheels
         datePicker.datePickerMode = .date
-       
-        birthdayDate.inputView = datePicker
-        birthdayDate.inputAccessoryView = createToolBar()
+        
+        dateTextField.inputView = datePicker
+        dateTextField.inputAccessoryView = createToolBar()
     }
     
     @objc func donePressed() {
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .medium
         dateFormatter.timeStyle = .none
-        self.birthdayDate.text = dateFormatter.string(from: datePicker.date)
+        self.dateTextField.text = dateFormatter.string(from: datePicker.date)
         self.view.endEditing(true)
         verifyTxt()
         
     }
-
+    
     func addPhoto() {
         guard images.count < 3 else {
             return
@@ -113,9 +149,9 @@ class BirthdayDataViewController: UIViewController {
         let imagePickerVC = UIImagePickerController()
         imagePickerVC.sourceType = .photoLibrary
         imagePickerVC.delegate = self
-//        imagePickerVC.allowsEditing = true
+        //        imagePickerVC.allowsEditing = true
         present(imagePickerVC, animated: true)
-//        view.endEditing(true)
+        //        view.endEditing(true)
     }
     
     @IBAction func addImage(_ sender: UIButton) {
@@ -142,13 +178,14 @@ extension BirthdayDataViewController: UIImagePickerControllerDelegate, UINavigat
         }
         images.append(image)
         
-        }
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true, completion: nil)
     }
-    
+}
+
+
 
 
 

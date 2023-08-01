@@ -13,8 +13,8 @@
                 <outlet property="addPhoto1" destination="DF7-1Y-trb" id="WXO-uX-x7P"/>
                 <outlet property="addPhoto2" destination="eoW-rf-SaP" id="wwF-8n-pQN"/>
                 <outlet property="addPhoto3" destination="u8X-qO-gTl" id="dbi-ie-eL5"/>
-                <outlet property="birthdayDate" destination="SxC-SB-6R8" id="tTR-Md-7GF"/>
-                <outlet property="birthdayPerson" destination="nvY-bn-KWQ" id="4m3-sE-ToI"/>
+                <outlet property="dateTextField" destination="SxC-SB-6R8" id="tTR-Md-7GF"/>
+                <outlet property="personTextField" destination="nvY-bn-KWQ" id="4m3-sE-ToI"/>
                 <outlet property="saveButton" destination="UGe-sw-K3u" id="AK6-24-n1B"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>

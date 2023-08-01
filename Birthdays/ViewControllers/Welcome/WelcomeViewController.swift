@@ -11,7 +11,6 @@ class WelcomeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
     }
     
     @IBAction func startButtonPressed(_ sender: UIButton) {

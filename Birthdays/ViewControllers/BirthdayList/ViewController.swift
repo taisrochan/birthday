@@ -61,6 +61,7 @@ class ViewController: UIViewController {
         view.addSubview(tableView)
         tableView.delegate = self
         tableView.dataSource = self
+    
     }
     
     func configNavigationBar() {
@@ -101,11 +102,14 @@ class ViewController: UIViewController {
 }
 
 extension ViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let position = indexPath.row
+        let model = birthdayData[position]
+        let birthdayDataViewController = BirthdayDataViewController(birthdayModel: model)
+        navigationController?.pushViewController(birthdayDataViewController, animated: true)
+        birthdayDataViewController.delegate = self
     }
 }
-
 extension ViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return birthdayData.count
@@ -120,7 +124,7 @@ extension ViewController: UITableViewDataSource {
         } else {
             print("INDEX: \(indexPath.row)")
         }
-        
+        cell?.selectionStyle = .none
         
         cell!.textLabel?.text = birthdayData[indexPath.row].name
         cell!.detailTextLabel?.text = birthdayData[indexPath.row].birthdayDate
@@ -143,6 +147,7 @@ extension ViewController: UITableViewDataSource {
             tableView.endUpdates()
             verifyIfThereIsValueOnTableView()
         }
+    
     }
 }
 

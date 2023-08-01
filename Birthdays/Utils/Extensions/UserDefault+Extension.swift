@@ -46,8 +46,11 @@ extension UserDefaults {
     }
 
     func set(_ imageArray: [UIImage], forKey key: String) {
-        let imageDataArray = imageArray.compactMap {
-            $0.pngData
+        var imageDataArray = [Data]()
+        imageArray.forEach { image in
+            if let data = image.pngData() {
+                imageDataArray.append(data)
+            }
         }
         self.set(imageDataArray, forKey: key)
     }
