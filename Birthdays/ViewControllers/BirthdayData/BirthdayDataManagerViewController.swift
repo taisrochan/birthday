@@ -16,9 +16,9 @@ class BirthdayDataManagerViewController: UIViewController {
     @IBOutlet weak var personTextField: UITextField!
     @IBOutlet weak var dateTextField: UITextField!
     @IBOutlet weak var saveButton: UIButton!
-    @IBOutlet weak var addPhoto1: UIImageView!
-    @IBOutlet weak var addPhoto2: UIImageView!
-    @IBOutlet weak var addPhoto3: UIImageView!
+    @IBOutlet weak var addPhotoOneImageView: UIImageView!
+    @IBOutlet weak var addPhotoTwoImageView: UIImageView!
+    @IBOutlet weak var addPhotoThreeImageView: UIImageView!
     @IBOutlet weak var addPhotoButton3: UIButton!
     @IBOutlet weak var addPhotoButton2: UIButton!
     @IBOutlet weak var addPhotoButton1: UIButton!
@@ -26,6 +26,7 @@ class BirthdayDataManagerViewController: UIViewController {
     init(birthdayModel: BirthdayListModel? = nil) {
         self.birthdayModel = birthdayModel
         super.init(nibName: nil, bundle: nil)
+        
     }
     
     required init?(coder: NSCoder) {
@@ -35,7 +36,14 @@ class BirthdayDataManagerViewController: UIViewController {
     let datePicker = UIDatePicker()
     var delegate: BirthdayDataViewControllerDelegate?
     let birthdayModel: BirthdayListModel?
-    var images: [UIImage] = []
+    var images: [UIImage?] = []
+    lazy var imagePickerController: UIImagePickerController = {
+        let imagePickerVC = UIImagePickerController()
+        imagePickerVC.sourceType = .photoLibrary
+        imagePickerVC.delegate = self
+        return imagePickerVC
+    }()
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -55,11 +63,48 @@ class BirthdayDataManagerViewController: UIViewController {
         _ = UITapGestureRecognizer(target: self,
                                    action: #selector(closeKeyboard))
         
-        [addPhoto1, addPhoto2, addPhoto3].forEach { imageView in
+        [addPhotoOneImageView, addPhotoTwoImageView, addPhotoThreeImageView].forEach { imageView in
             imageView.contentMode = .scaleAspectFit
             imageView.layer.cornerRadius = 10
         }
+        
         configScreenIfIsEditingBirthday()
+        
+        [addPhotoButton1, addPhotoButton2, addPhotoButton3].forEach {
+            
+            let longPressRecognizer = UILongPressGestureRecognizer(target: self,
+                                                                   action: #selector(longPressed))
+            $0?.addGestureRecognizer(longPressRecognizer)
+        }
+        
+    }
+    
+    @objc func longPressed(sender: UILongPressGestureRecognizer) {
+        if sender.view == addPhotoButton1 && images.indices.contains(0) {
+            addPhotoOneImageView.alpha = 0.5
+            let image = UIImage
+                .init(systemName: "trash")?
+                .withRenderingMode(.alwaysTemplate)
+            addPhotoButton1.setImage(image, for: .normal)
+            addPhotoButton1.tintColor = .red
+        }
+        if sender.view == addPhotoButton2 && images.indices.contains(1) {
+            addPhotoTwoImageView.alpha = 0.5
+            let image = UIImage
+                .init(systemName: "trash")?
+                .withRenderingMode(.alwaysTemplate)
+            addPhotoButton2.setImage(image, for: .normal)
+            addPhotoButton2.tintColor = .red
+        }
+        if sender.view == addPhotoButton3 && images.indices.contains(2) {
+            addPhotoThreeImageView.alpha = 0.5
+            let image = UIImage
+                .init(systemName: "trash")?
+                .withRenderingMode(.alwaysTemplate)
+            addPhotoButton3.setImage(image, for: .normal)
+            addPhotoButton3.tintColor = .red
+        }
+        
     }
     
     func configScreenIfIsEditingBirthday() {
@@ -94,19 +139,20 @@ class BirthdayDataManagerViewController: UIViewController {
     
     func getPicture() {
         if let model = birthdayModel {
-            let images = UserDefaults.standard.imageArray(forKey: model.identifier) ?? []
-            if images.indices.contains(0) {
-                addPhoto1.image = images[0]
-                addPhoto1.contentMode = .scaleAspectFill
+            let imagesFromUserDefaults = UserDefaults.standard.imageArray(forKey: model.identifier) ?? []
+            if imagesFromUserDefaults.indices.contains(0) {
+                addPhotoOneImageView.image = imagesFromUserDefaults[0]
+                addPhotoOneImageView.contentMode = .scaleAspectFill
             }
-            if images.indices.contains(1) {
-                addPhoto2.image = images[1]
-                addPhoto2.contentMode = .scaleAspectFill
+            if imagesFromUserDefaults.indices.contains(1) {
+                addPhotoTwoImageView.image = imagesFromUserDefaults[1]
+                addPhotoTwoImageView.contentMode = .scaleAspectFill
             }
-            if images.indices.contains(2) {
-                addPhoto3.image = images[2]
-                addPhoto3.contentMode = .scaleAspectFill
+            if imagesFromUserDefaults.indices.contains(2) {
+                addPhotoThreeImageView.image = imagesFromUserDefaults[2]
+                addPhotoThreeImageView.contentMode = .scaleAspectFill
             }
+            images = imagesFromUserDefaults
         }
     }
     
@@ -170,29 +216,48 @@ class BirthdayDataManagerViewController: UIViewController {
         self.dateTextField.text = dateFormatter.string(from: datePicker.date)
         self.view.endEditing(true)
         verifyTxt()
-        
+    }
+
+
+    @IBAction func configImageAction(_ sender: UIButton) {
+        let shouldAddImage = sender.currentImage == nil
+        if shouldAddImage {
+            presentImagePicker()
+        } else {
+            deleteImage(button: sender)
+        }
     }
     
-    func addPhoto() {
+    func presentImagePicker() {
         guard images.count < 3 else {
             return
         }
-        let imagePickerVC = UIImagePickerController()
-        imagePickerVC.sourceType = .photoLibrary
-        imagePickerVC.delegate = self
-        //        imagePickerVC.allowsEditing = true
-        present(imagePickerVC, animated: true)
-        //        view.endEditing(true)
+        present(imagePickerController, animated: true)
     }
     
-    @IBAction func addImage(_ sender: UIButton) {
-        let sender = sender
-        addPhoto()
-        
+    func deleteImage(button: UIButton) {
+        button.setImage(nil, for: .normal)
+        button.tintColor = .clear
+        switch button {
+        case addPhotoButton1:
+            resetImageView(index: 0, imageView: addPhotoOneImageView)
+        case addPhotoButton2:
+            resetImageView(index: 1, imageView: addPhotoTwoImageView)
+        case addPhotoButton3:
+            resetImageView(index: 2, imageView: addPhotoThreeImageView)
+        default: break
+        }
+    }
+    
+    func resetImageView(index: Int, imageView: UIImageView) {
+        let image = UIImage.init(systemName: "plus.app.fill")
+        images[index] = nil
+        imageView.image = image
+        imageView.contentMode = .scaleAspectFit
     }
 }
 
-extension BirthdayDataManagerViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+extension BirthdayDataManagerViewController: UIImagePickerControllerDelegate & UINavigationControllerDelegate {
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         picker.dismiss(animated: true, completion: nil)
@@ -200,14 +265,14 @@ extension BirthdayDataManagerViewController: UIImagePickerControllerDelegate, UI
             return
         }
         if images.count == 0 {
-            addPhoto1.image = image
-            addPhoto1.contentMode = .scaleAspectFill
+            addPhotoOneImageView.image = image
+            addPhotoOneImageView.contentMode = .scaleAspectFill
         } else if images.count == 1 {
-            addPhoto2.image = image
-            addPhoto2.contentMode = .scaleAspectFill
+            addPhotoTwoImageView.image = image
+            addPhotoTwoImageView.contentMode = .scaleAspectFill
         } else if images.count == 2 {
-            addPhoto3.image = image
-            addPhoto3.contentMode = .scaleAspectFill
+            addPhotoThreeImageView.image = image
+            addPhotoThreeImageView.contentMode = .scaleAspectFill
         }
         images.append(image)
         
@@ -216,10 +281,7 @@ extension BirthdayDataManagerViewController: UIImagePickerControllerDelegate, UI
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true, completion: nil)
     }
+    
 }
-
-
-
-
 
 

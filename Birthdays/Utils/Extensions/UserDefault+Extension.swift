@@ -35,7 +35,7 @@ extension UserDefaults {
 }
 
 extension UserDefaults {
-    func imageArray(forKey key: String) -> [UIImage]? {
+    func imageArray(forKey key: String) -> [UIImage?]? {
         guard let array = self.array(forKey: key) as? [Data] else {
             return nil
         }
@@ -45,10 +45,10 @@ extension UserDefaults {
         return imageArray
     }
 
-    func set(_ imageArray: [UIImage], forKey key: String) {
+    func set(_ imageArray: [UIImage?], forKey key: String) {
         var imageDataArray = [Data]()
         imageArray.forEach { image in
-            if let data = image.pngData() {
+            if let data = image?.pngData() {
                 imageDataArray.append(data)
             }
         }

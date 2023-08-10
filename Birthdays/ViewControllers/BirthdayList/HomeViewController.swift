@@ -132,19 +132,26 @@ extension HomeViewController: BirthdayDataViewControllerDelegate {
         let newBirthday = BirthdayListModel(name: name,
                                             birthdayDate: birthday,
                                             identifier: id)
+        
+        
+        
+        
+        
+        
         birthdayDataArray.append(newBirthday)
         tableView.reloadData()
         verifyIfThereIsValueOnTableView()
     }
     
     func editBirthdayInfo(name: String, birthday: String, id: String) {
-        let editBirthday = BirthdayListModel(name: name, birthdayDate: birthday, identifier: id)
+        _ = BirthdayListModel(name: name, birthdayDate: birthday, identifier: id)
         for i in 0..<birthdayDataArray.count {
             if birthdayDataArray[i].identifier == id {
                 birthdayDataArray[i].name = name
                 birthdayDataArray[i].birthdayDate = birthday
             }
         }
+        
         tableView.reloadData()
     }
 }
