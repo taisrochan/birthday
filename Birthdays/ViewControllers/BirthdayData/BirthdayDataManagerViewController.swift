@@ -179,14 +179,17 @@ class BirthdayDataManagerViewController: UIViewController {
     @IBAction func saveButtonPressed(_ sender: UIButton) {
         let name = personTextField.text ?? ""
         let birthday = dateTextField.text ?? ""
+        
+        let imagesToSave = images.compactMap { $0 }
         if let model = birthdayModel {
-            UserDefaults.standard.set(images, forKey: model.identifier)
+            UserDefaults.standard.set(imagesToSave, forKey: model.identifier)
             delegate?.editBirthdayInfo(name: name, birthday: birthday, id: model.identifier)
         } else {
             let id = UUID().uuidString
             delegate?.passBirthdayInfo(name: name, birthday: birthday, id: id)
-            UserDefaults.standard.set(images, forKey: id)
+            UserDefaults.standard.set(imagesToSave, forKey: id)
         }
+        
         navigationController?.popViewController(animated: true)
     }
     
@@ -198,7 +201,6 @@ class BirthdayDataManagerViewController: UIViewController {
         toolBar.setItems([doneButton], animated: true)
         
         return toolBar
-        
     }
     
     func createDatePicker() {
