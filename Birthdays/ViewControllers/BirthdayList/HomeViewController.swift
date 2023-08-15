@@ -6,8 +6,6 @@
 //
 import UIKit
 
-
-
 class HomeViewController: UIViewController {
     
     @IBOutlet weak var emptyTableViewLabel: UILabel!
@@ -194,13 +192,9 @@ extension HomeViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-//            tableView.beginUpdates()
-//            tableView.deleteRows(at: [indexPath], with: .fade)
-//            birthdayDataArray.remove(at: indexPath.row)
-//            tableView.endUpdates()
-//            verifyIfThereIsValueOnTableView()
             birthdayDataArray.remove(at: indexPath.row)
             tableView.reloadData()
+            verifyIfThereIsValueOnTableView()
         }
     }
 }
