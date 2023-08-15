@@ -6,6 +6,8 @@
 //
 import UIKit
 
+
+
 class HomeViewController: UIViewController {
     
     @IBOutlet weak var emptyTableViewLabel: UILabel!
@@ -81,6 +83,43 @@ class HomeViewController: UIViewController {
             UserDefaults.standard.set(encondedData, forKey: birthdayKey)
         }
     }
+    
+    func getArrayOfMonths() -> [String] {
+        let arrayOfDates = birthdayDataArray.map {
+            return $0.birthdayDate
+        }
+        let arrayOfMonths = arrayOfDates.map { dateOfTheCurrentIndex in
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "dd/MM/yyyy"
+            if let date = dateFormatter.date(from: dateOfTheCurrentIndex) {
+                let dateFormatterMonth = DateFormatter()
+                dateFormatterMonth.dateFormat = "MM"
+                let month = dateFormatterMonth.string(from: date)
+                return month
+            }
+            return ""
+        }
+        var uniqueMonths = Array(Set(arrayOfMonths))
+        uniqueMonths.sort {
+            $0 < $1
+        }
+        return uniqueMonths
+    }
+    
+    func getArrayOfModelsWithShortDate() -> [BirthdayListModel] {
+        let newArray = birthdayDataArray.map { birthday in
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "dd/MM/yyyy"
+            let date = dateFormatter.date(from: birthday.birthdayDate) ?? Date()
+            let dateFormatterMonth = DateFormatter()
+            dateFormatterMonth.dateFormat = "MM"
+            let month = dateFormatterMonth.string(from: date)
+            return BirthdayListModel(name: birthday.name,
+                                     birthdayDate: month,
+                                     identifier: birthday.identifier)
+        }
+        return newArray
+    }
 }
 
 extension HomeViewController: UITableViewDelegate {
@@ -95,7 +134,33 @@ extension HomeViewController: UITableViewDelegate {
 
 extension HomeViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return birthdayDataArray.count
+        let months = getArrayOfMonths()
+        let month = months[section]
+        let birthdays = getArrayOfModelsWithShortDate()
+        let birthdaysFromSpecificMonth = birthdays.filter {
+            $0.birthdayDate == month
+        }
+        return birthdaysFromSpecificMonth.count
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        let array = getArrayOfMonths()
+        return array.count
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        let months = getArrayOfMonths()
+        let month = months[section]
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MM"
+        let date = dateFormatter.date(from: month) ?? Date()
+        
+        let nameMonthFormatter = DateFormatter()
+        nameMonthFormatter.dateFormat = "MMMM"
+        let title = nameMonthFormatter.string(from: date)
+        
+        return title.capitalized
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -106,9 +171,20 @@ extension HomeViewController: UITableViewDataSource {
         } else {
             print("INDEX: \(indexPath.row)")
         }
+        
+        let months = getArrayOfMonths()
+        let month = months[indexPath.section]
+        let birthdays = getArrayOfModelsWithShortDate()
+        let birthdaysFromSpecificMonth = birthdays.filter {
+            $0.birthdayDate == month
+        }
+        let birthday = birthdayDataArray.first {
+            $0.identifier == birthdaysFromSpecificMonth[indexPath.row].identifier
+        }
+        
         cell?.selectionStyle = .none
-        cell?.textLabel?.text = birthdayDataArray[indexPath.row].name
-        cell?.detailTextLabel?.text = birthdayDataArray[indexPath.row].birthdayDate
+        cell?.textLabel?.text = birthdaysFromSpecificMonth[indexPath.row].name
+        cell?.detailTextLabel?.text = birthday?.birthdayDate
         return cell!
     }
     
@@ -118,11 +194,13 @@ extension HomeViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            tableView.beginUpdates()
-            tableView.deleteRows(at: [indexPath], with: .fade)
+//            tableView.beginUpdates()
+//            tableView.deleteRows(at: [indexPath], with: .fade)
+//            birthdayDataArray.remove(at: indexPath.row)
+//            tableView.endUpdates()
+//            verifyIfThereIsValueOnTableView()
             birthdayDataArray.remove(at: indexPath.row)
-            tableView.endUpdates()
-            verifyIfThereIsValueOnTableView()
+            tableView.reloadData()
         }
     }
 }

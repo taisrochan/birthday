@@ -215,6 +215,7 @@ class BirthdayDataManagerViewController: UIViewController {
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .medium
         dateFormatter.timeStyle = .none
+        dateFormatter.dateFormat = "dd/MM/yyyy"
         self.dateTextField.text = dateFormatter.string(from: datePicker.date)
         self.view.endEditing(true)
         verifyTxt()
