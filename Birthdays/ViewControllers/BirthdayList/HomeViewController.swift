@@ -69,6 +69,7 @@ class HomeViewController: UIViewController {
     }
     
     func verifyIfThereIsValueOnTableView() {
+        emptyTableViewLabel.isHidden = false
         if birthdayDataMatrix.count == 0 {
             tableView.isHidden = true
         } else {
@@ -175,12 +176,13 @@ extension HomeViewController: BirthdayDataViewControllerDelegate {
     
     func editBirthdayInfo(name: String, birthday: String, id: String, month: String) {
         for j in 0..<birthdayDataMatrix.count {
-            for i in 0..<birthdayDataMatrix[j].count {
+            for i in 0...(birthdayDataMatrix[j].count-1) {
                 if birthdayDataMatrix[j][i].identifier == id {
                     birthdayDataMatrix[j].remove(at: i)
                     if birthdayDataMatrix[j].isEmpty {
                         birthdayDataMatrix.remove(at: j)
                     }
+                    break
                 }
             }
         }

@@ -10,7 +10,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="HomeViewController" customModule="Birthdays" customModuleProvider="target">
             <connections>
-                <outlet property="emptyTableViewLabel" destination="aBE-nd-3N7" id="o00-z9-DwT"/>
+                <outlet property="emptyTableViewLabel" destination="aBE-nd-3N7" id="lhQ-JF-KSW"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
