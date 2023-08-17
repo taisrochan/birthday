@@ -8,8 +8,8 @@
 import UIKit
 
 protocol BirthdayDataViewControllerDelegate {
-    func passBirthdayInfo(name: String, birthday: String, id: String)
-    func editBirthdayInfo(name: String, birthday: String, id: String)
+    func passBirthdayInfo(name: String, birthday: String, id: String, month: String)
+    func editBirthdayInfo(name: String, birthday: String, id: String, month: String)
 }
 
 class BirthdayDataManagerViewController: UIViewController {
@@ -180,13 +180,26 @@ class BirthdayDataManagerViewController: UIViewController {
         let name = personTextField.text ?? ""
         let birthday = dateTextField.text ?? ""
         
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd/MM/yyyy"
+        let date = dateFormatter.date(from: birthday) ?? Date()
+        let monthFormatter = DateFormatter()
+        monthFormatter.dateFormat = "MM"
+        let monthString = monthFormatter.string(from: date)
+        
         let imagesToSave = images.compactMap { $0 }
         if let model = birthdayModel {
             UserDefaults.standard.set(imagesToSave, forKey: model.identifier)
-            delegate?.editBirthdayInfo(name: name, birthday: birthday, id: model.identifier)
+            delegate?.editBirthdayInfo(name: name,
+                                       birthday: birthday,
+                                       id: model.identifier,
+                                       month: monthString)
         } else {
             let id = UUID().uuidString
-            delegate?.passBirthdayInfo(name: name, birthday: birthday, id: id)
+            delegate?.passBirthdayInfo(name: name,
+                                       birthday: birthday,
+                                       id: id,
+                                       month: monthString)
             UserDefaults.standard.set(imagesToSave, forKey: id)
         }
         
