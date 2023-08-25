@@ -26,8 +26,7 @@ class HomeViewController: UIViewController {
         configNavigationBar()
         verifyIfThereIsValueOnTableView()
         fetchBirthdayData()
-        ordenateMonthsInSections()
-        ordenateBirthdayDatesInMonths()
+        sortMonthsAndBirthdays()
     }
     
     override func viewDidLayoutSubviews() {
@@ -85,6 +84,11 @@ class HomeViewController: UIViewController {
         }
     }
     
+    func sortMonthsAndBirthdays() {
+        ordenateMonthsInSections()
+        ordenateBirthdayDatesInMonths()
+    }
+    
     func ordenateBirthdayDatesInMonths() {
         
         guard birthdayDataMatrix.count > 0 else {
@@ -122,7 +126,6 @@ class HomeViewController: UIViewController {
         for j in 0..<birthdayDataMatrix.count {
             if birthdayDataMatrix[j][0].month >= month {
                 indice = j
-                print(indice)
                 break
             }
         }
@@ -234,8 +237,7 @@ extension HomeViewController: BirthdayDataViewControllerDelegate {
         if didAppendMonth == false {
             birthdayDataMatrix.append([newBirthday])
         }
-        ordenateBirthdayDatesInMonths()
-        ordenateMonthsInSections()
+        sortMonthsAndBirthdays()
         tableView.reloadData()
         verifyIfThereIsValueOnTableView()
     }
