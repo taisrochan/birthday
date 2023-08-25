@@ -26,6 +26,8 @@ class HomeViewController: UIViewController {
         configNavigationBar()
         verifyIfThereIsValueOnTableView()
         fetchBirthdayData()
+        ordenateMonthsInSections()
+        ordenateBirthdayDatesInMonths()
     }
     
     override func viewDidLayoutSubviews() {
@@ -43,7 +45,7 @@ class HomeViewController: UIViewController {
         view.addSubview(tableView)
         tableView.delegate = self
         tableView.dataSource = self
-    
+        
     }
     
     func configNavigationBar() {
@@ -82,6 +84,69 @@ class HomeViewController: UIViewController {
             UserDefaults.standard.set(encondedData, forKey: birthdayKey)
         }
     }
+    
+    func ordenateBirthdayDatesInMonths() {
+        
+        guard birthdayDataMatrix.count > 0 else {
+            return
+        }
+        for j in 0..<birthdayDataMatrix.count{
+            var month = birthdayDataMatrix[j]
+            let orderedBirthdays = month.sorted {
+                $0.birthdayDate < $1.birthdayDate
+            }
+            birthdayDataMatrix.remove(at: j)
+            birthdayDataMatrix.insert(orderedBirthdays, at: j)
+            }
+        }
+    
+    func ordenateMonthsInSections() {
+        guard birthdayDataMatrix.count > 0 else {
+            return
+        }
+        //1. Ordernar os meses das sections em ordem crescente
+        let orderedMatrix = birthdayDataMatrix.sorted {
+            $0[0].month < $1[0].month
+        }
+        birthdayDataMatrix = orderedMatrix
+        
+        //2. Pegar date como String da data de hoje
+        let currentDate = Date()
+        let dateFormater = DateFormatter()
+        dateFormater.dateFormat = "MM"
+        let month = dateFormater.string(from: currentDate)
+        print(month)
+        
+        //Descobrir qual indice da matriz em que o array corresponde ao mês atual
+        var indice: Int?
+        for j in 0..<birthdayDataMatrix.count {
+            if birthdayDataMatrix[j][0].month >= month {
+                indice = j
+                print(indice)
+                break
+            }
+        }
+        guard let indice = indice else {
+            return
+        }
+        // Pegar fatia da matriz que começa no índice descoberto e copiar essa fatia para uma nova propriedade
+        
+        let arraySlice = birthdayDataMatrix[indice..<birthdayDataMatrix.endIndex]
+        print(arraySlice)
+        
+        // Remover essa fatia da matriz
+        
+        let lastIndex = birthdayDataMatrix.count - 1
+        
+        for j in (indice...lastIndex).reversed() {
+            birthdayDataMatrix.remove(at: j)
+        }
+        print(birthdayDataMatrix)
+        
+        // Inserir a copia no inicio da matriz
+        
+        birthdayDataMatrix.insert(contentsOf: arraySlice, at: 0)
+    }
 }
 
 extension HomeViewController: UITableViewDelegate {
@@ -102,7 +167,7 @@ extension HomeViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-
+        
         let month = birthdayDataMatrix[section][0].month
         
         let dateFormatter = DateFormatter()
@@ -117,7 +182,7 @@ extension HomeViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-       
+        
         var cell = tableView.dequeueReusableCell(withIdentifier: "Cell")
         
         if cell == nil {
@@ -125,7 +190,7 @@ extension HomeViewController: UITableViewDataSource {
         } else {
             print("INDEX: \(indexPath.row)")
         }
-  
+        
         cell?.selectionStyle = .none
         let element = birthdayDataMatrix[indexPath.section][indexPath.row]
         cell?.textLabel?.text = element.name
@@ -136,7 +201,7 @@ extension HomeViewController: UITableViewDataSource {
     func tableview(_tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
         return .delete
     }
-
+    
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             birthdayDataMatrix[indexPath.section].remove(at: indexPath.row)
@@ -169,7 +234,8 @@ extension HomeViewController: BirthdayDataViewControllerDelegate {
         if didAppendMonth == false {
             birthdayDataMatrix.append([newBirthday])
         }
-        
+        ordenateBirthdayDatesInMonths()
+        ordenateMonthsInSections()
         tableView.reloadData()
         verifyIfThereIsValueOnTableView()
     }
@@ -187,7 +253,5 @@ extension HomeViewController: BirthdayDataViewControllerDelegate {
             }
         }
         passBirthdayInfo(name: name, birthday: birthday, id: id, month: month)
-        tableView.reloadData()
-        
     }
 }
