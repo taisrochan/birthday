@@ -241,7 +241,6 @@ extension HomeViewController: BirthdayDataViewControllerDelegate {
         tableView.reloadData()
         verifyIfThereIsValueOnTableView()
     }
-    
     func editBirthdayInfo(name: String, birthday: String, id: String, month: String) {
         for j in 0..<birthdayDataMatrix.count {
             for i in 0...(birthdayDataMatrix[j].count-1) {

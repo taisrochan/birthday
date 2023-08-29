@@ -67,16 +67,14 @@ class BirthdayDataManagerViewController: UIViewController {
             imageView.contentMode = .scaleAspectFit
             imageView.layer.cornerRadius = 10
         }
-        
-        configScreenIfIsEditingBirthday()
-        
         [addPhotoButton1, addPhotoButton2, addPhotoButton3].forEach {
             
             let longPressRecognizer = UILongPressGestureRecognizer(target: self,
                                                                    action: #selector(longPressed))
             $0?.addGestureRecognizer(longPressRecognizer)
+            
+            configScreenIfIsEditingBirthday()
         }
-        
     }
     
     @objc func longPressed(sender: UILongPressGestureRecognizer) {
@@ -111,30 +109,28 @@ class BirthdayDataManagerViewController: UIViewController {
         guard let model = birthdayModel else {
             return
         }
-        saveButton.backgroundColor = .gray
         personTextField.text = model.name
-        personTextField.isEnabled = false
         dateTextField.text = model.birthdayDate
-        dateTextField.isEnabled = false
-        saveButton.isEnabled = false
-        addPhotoButton1.isEnabled = false
-        addPhotoButton2.isEnabled = false
-        addPhotoButton3.isEnabled = false
+        updateUIForEditingBirthday(false)
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Editar",
                                                             style: .plain,
                                                             target: self,
                                                             action: #selector(editarDetalhes))
         getPicture()
     }
-    
+
     @objc func editarDetalhes() {
-        saveButton.backgroundColor = .orange
-        personTextField.isEnabled = true
-        dateTextField.isEnabled = true
-        saveButton.isEnabled = true
-        addPhotoButton1.isEnabled = true
-        addPhotoButton2.isEnabled = true
-        addPhotoButton3.isEnabled = true
+        updateUIForEditingBirthday(true)
+    }
+    
+    func updateUIForEditingBirthday(_ isEditing: Bool) {
+        saveButton.backgroundColor = isEditing ? .orange : .gray
+        personTextField.isEnabled = isEditing
+        dateTextField.isEnabled = isEditing
+        saveButton.isEnabled = isEditing
+        addPhotoButton1.isEnabled = isEditing
+        addPhotoButton2.isEnabled = isEditing
+        addPhotoButton3.isEnabled = isEditing
     }
     
     func getPicture() {
