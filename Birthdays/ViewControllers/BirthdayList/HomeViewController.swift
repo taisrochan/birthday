@@ -95,14 +95,14 @@ class HomeViewController: UIViewController {
             return
         }
         for j in 0..<birthdayDataMatrix.count{
-            var month = birthdayDataMatrix[j]
+            let month = birthdayDataMatrix[j]
             let orderedBirthdays = month.sorted {
-                $0.birthdayDate < $1.birthdayDate
+                $0.day < $1.day
             }
             birthdayDataMatrix.remove(at: j)
             birthdayDataMatrix.insert(orderedBirthdays, at: j)
-            }
         }
+    }
     
     func ordenateMonthsInSections() {
         guard birthdayDataMatrix.count > 0 else {
@@ -110,7 +110,7 @@ class HomeViewController: UIViewController {
         }
         //1. Ordernar os meses das sections em ordem crescente
         let orderedMatrix = birthdayDataMatrix.sorted {
-            $0[0].month < $1[0].month
+            (Int($0[0].month) ?? 0) < (Int($1[0].month) ?? 0)
         }
         birthdayDataMatrix = orderedMatrix
         
@@ -119,12 +119,12 @@ class HomeViewController: UIViewController {
         let dateFormater = DateFormatter()
         dateFormater.dateFormat = "MM"
         let month = dateFormater.string(from: currentDate)
-        print(month)
         
         //Descobrir qual indice da matriz em que o array corresponde ao mês atual
         var indice: Int?
         for j in 0..<birthdayDataMatrix.count {
-            if birthdayDataMatrix[j][0].month >= month {
+            let indiceMont = birthdayDataMatrix[j][0].month
+            if Int(indiceMont) ?? 0 >= Int(month) ?? 0 {
                 indice = j
                 break
             }
@@ -150,6 +150,7 @@ class HomeViewController: UIViewController {
         
         birthdayDataMatrix.insert(contentsOf: arraySlice, at: 0)
     }
+    
 }
 
 extension HomeViewController: UITableViewDelegate {
@@ -197,32 +198,25 @@ extension HomeViewController: UITableViewDataSource {
         cell?.selectionStyle = .none
         let element = birthdayDataMatrix[indexPath.section][indexPath.row]
         cell?.textLabel?.text = element.name
-        cell?.detailTextLabel?.text = element.birthdayDate
+        cell?.detailTextLabel?.text = element.day
         return cell!
     }
     
     func tableview(_tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
         return .delete
+        
     }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            birthdayDataMatrix[indexPath.section].remove(at: indexPath.row)
-            if birthdayDataMatrix[indexPath.section].isEmpty {
-                birthdayDataMatrix.remove(at: indexPath.section)
-            }
-            tableView.reloadData()
-            verifyIfThereIsValueOnTableView()
+            showDeleteCellAlert(indexPath: indexPath)
         }
     }
 }
 
 extension HomeViewController: BirthdayDataViewControllerDelegate {
-    func passBirthdayInfo(name: String, birthday: String, id: String, month: String) {
-        let newBirthday = BirthdayListModel(name: name,
-                                            birthdayDate: birthday,
-                                            month: month,
-                                            identifier: id)
+    func passBirthdayInfo(name: String, day: String, id: String, month: String, birthday: Date) {
+        let newBirthday = BirthdayListModel(name: name, day: day, month: month, identifier: id, birthday: birthday)
         
         var didAppendMonth = false
         birthdayDataMatrix.enumerated().forEach { (index, monthArray) in
@@ -240,8 +234,11 @@ extension HomeViewController: BirthdayDataViewControllerDelegate {
         sortMonthsAndBirthdays()
         tableView.reloadData()
         verifyIfThereIsValueOnTableView()
+        
+        
     }
-    func editBirthdayInfo(name: String, birthday: String, id: String, month: String) {
+    
+    func editBirthdayInfo(name: String, day: String, id: String, month: String, birthday: Date) {
         for j in 0..<birthdayDataMatrix.count {
             for i in 0...(birthdayDataMatrix[j].count-1) {
                 if birthdayDataMatrix[j][i].identifier == id {
@@ -253,6 +250,40 @@ extension HomeViewController: BirthdayDataViewControllerDelegate {
                 }
             }
         }
-        passBirthdayInfo(name: name, birthday: birthday, id: id, month: month)
+        
+        passBirthdayInfo(name: name, day: day, id: id, month: month, birthday: birthday)
+        
     }
 }
+
+private extension HomeViewController {
+    func showDeleteCellAlert(indexPath: IndexPath) {
+        let alertController = UIAlertController(title: "Confirmação",
+                                                message: "Tem certeza de que deseja excluir este item?",
+                                                preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: "Cancelar", style: .cancel, handler: nil)
+        let deleteAction = UIAlertAction(title: "Excluir", style: .destructive) { (action) in
+            self.deleteCell(indexPath: indexPath)
+        }
+        
+        alertController.addAction(cancelAction)
+        alertController.addAction(deleteAction)
+        present(alertController, animated: true, completion: nil)
+    }
+    
+    func deleteCell(indexPath: IndexPath) {
+       birthdayDataMatrix[indexPath.section].remove(at: indexPath.row)
+        if birthdayDataMatrix[indexPath.section].isEmpty {
+            birthdayDataMatrix.remove(at: indexPath.section)
+        }
+        
+        tableView.reloadData()
+        verifyIfThereIsValueOnTableView()
+    }
+}
+
+    
+
+
+
+
