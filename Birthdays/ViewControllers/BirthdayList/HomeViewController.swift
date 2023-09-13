@@ -21,6 +21,9 @@ class HomeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.register(UINib(nibName: "CustomTableViewCell", bundle: nil), forCellReuseIdentifier: "birthdayCell")
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.separatorColor = .clear
         view.backgroundColor = .white
         configTableView()
         configNavigationBar()
@@ -186,20 +189,12 @@ extension HomeViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "birthdayCell", for: indexPath) as! CustomTableViewCell
         
-        var cell = tableView.dequeueReusableCell(withIdentifier: "Cell")
-        
-        if cell == nil {
-            cell = UITableViewCell(style: .subtitle, reuseIdentifier: "Cell")
-        } else {
-            print("INDEX: \(indexPath.row)")
-        }
-        
-        cell?.selectionStyle = .none
+        cell.selectionStyle = .none
         let element = birthdayDataMatrix[indexPath.section][indexPath.row]
-        cell?.textLabel?.text = element.name
-        cell?.detailTextLabel?.text = element.day
-        return cell!
+        cell.passData(day: element.day, name: element.name)
+        return cell
     }
     
     func tableview(_tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {

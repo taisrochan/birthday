@@ -28,7 +28,6 @@ class BirthdayDataManagerViewController: UIViewController {
     init(birthdayModel: BirthdayListModel? = nil) {
         self.birthdayModel = birthdayModel
         super.init(nibName: nil, bundle: nil)
-        //        saveButton.backgroundColor = .blue
         print(view.frame)
     }
     
@@ -46,6 +45,7 @@ class BirthdayDataManagerViewController: UIViewController {
         imagePickerVC.delegate = self
         return imagePickerVC
     }()
+    
     let months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
     var selectedMonth = ""
     var daysInMonth: [String] = (1...31).map { String($0) }
@@ -63,7 +63,6 @@ class BirthdayDataManagerViewController: UIViewController {
         "Novembro": 11,
         "Dezembro": 12
     ]
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -150,14 +149,28 @@ class BirthdayDataManagerViewController: UIViewController {
         guard let model = birthdayModel else {
             return
         }
-        personTextField.text = model.name
-        //        dateTextField.text = model.birthdayDate
+        fillBirthdayInfos(birthDayModel: model)
         updateUIForEditingBirthday(false)
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Editar",
                                                             style: .plain,
                                                             target: self,
                                                             action: #selector(editingDetails))
         getPicture()
+    }
+    
+    func fillBirthdayInfos(birthDayModel: BirthdayListModel) {
+        let monthShortString = birthDayModel.month
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MM"
+        guard let monthAsDate = dateFormatter.date(from: monthShortString) else {
+            return
+        }
+        dateFormatter.dateFormat = "MMMM"
+        let monthLongString = dateFormatter.string(from: monthAsDate)
+        
+        personTextField.text = birthDayModel.name
+        monthTextField.text = monthLongString
+        dayTextField.text = birthDayModel.day
     }
     
     @objc func editingDetails() {
@@ -167,7 +180,8 @@ class BirthdayDataManagerViewController: UIViewController {
     func updateUIForEditingBirthday(_ isEditing: Bool) {
         saveButton.backgroundColor = isEditing ? .orange : .gray
         personTextField.isEnabled = isEditing
-        //        dateTextField.isEnabled = isEditing
+        dayTextField.isEnabled = isEditing
+        monthTextField.isEnabled = isEditing
         saveButton.isEnabled = isEditing
         addPhotoButton1.isEnabled = isEditing
         addPhotoButton2.isEnabled = isEditing
@@ -257,7 +271,6 @@ class BirthdayDataManagerViewController: UIViewController {
     }
     
     @objc func doneButtonPressed() {
-        // Oculte o teclado (ou, neste caso, o pickerView) quando o botão "Pronto" for pressionado
         dayTextField.resignFirstResponder()
         monthTextField.resignFirstResponder()
         verifyTxt()
@@ -275,30 +288,10 @@ class BirthdayDataManagerViewController: UIViewController {
         monthTextField.inputAccessoryView = doneToolbar
     }
     
-    //
-    //        func createToolBar() -> UIToolbar {
-    //            let toolBar = UIToolbar ()
-    //          toolBar.sizeToFit()
-    //
-    //            let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: nil, action: #selector(donePressed))
-    //           toolBar.setItems([doneButton], animated: true)
-    //
-    //            return toolBar
-    //       }
-    
-    //       func createDatePicker() {
-    //    //        datePicker.preferredDatePickerStyle = .wheels
-    //    //        datePicker.datePickerMode = .date
-    //    //        dateTextField.inputView = datePicker
-    //            dateTextField.inputAccessoryView = createToolBar()
-    //
-    //     }
-    
     @objc func donePressed() {
         self.view.endEditing(true)
         verifyTxt()
     }
-    
     
     @IBAction func configImageAction(_ sender: UIButton) {
         let shouldAddImage = sender.currentImage == nil
