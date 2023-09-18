@@ -28,7 +28,6 @@ class BirthdayDataManagerViewController: UIViewController {
     init(birthdayModel: BirthdayListModel? = nil) {
         self.birthdayModel = birthdayModel
         super.init(nibName: nil, bundle: nil)
-        print(view.frame)
     }
     
     required init?(coder: NSCoder) {
@@ -46,40 +45,18 @@ class BirthdayDataManagerViewController: UIViewController {
         return imagePickerVC
     }()
     
-    let months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
     var selectedMonth = ""
     var daysInMonth: [String] = (1...31).map { String($0) }
-    let monthsToNumber: [String: Int] = [
-        "Janeiro": 1,
-        "Fevereiro": 2,
-        "Março": 3,
-        "Abril": 4,
-        "Maio": 5,
-        "Junho": 6,
-        "Julho": 7,
-        "Agosto": 8,
-        "Setembro": 9,
-        "Outubro": 10,
-        "Novembro": 11,
-        "Dezembro": 12
-    ]
     
     override func viewDidLoad() {
         super.viewDidLoad()
         saveButton.backgroundColor = .orange
-        //        print("frame: \(view.frame)")
         saveButton.isEnabled = false
         saveButton.setTitleColor(.white, for: .normal)
         saveButton.setTitleColor(.white, for: .disabled)
         personTextField.addTarget(self,
                                   action: #selector(textFieldDidChange(_:)),
                                   for: .editingChanged)
-        //        dateTextField.addTarget(self,
-        //                                action: #selector(textFieldDidChange(_:)),
-        //                                for: .editingChanged)
-        //        dateTextField.clearButtonMode = .always
-        
-        //createDatePicker()
         
         monthTextField.rightView?.largeContentImage = .add
         
@@ -90,31 +67,22 @@ class BirthdayDataManagerViewController: UIViewController {
             imageView.contentMode = .scaleAspectFit
             imageView.layer.cornerRadius = 10
         }
+        
         [addPhotoButton1, addPhotoButton2, addPhotoButton3].forEach {
             
             let longPressRecognizer = UILongPressGestureRecognizer(target: self,
                                                                    action: #selector(longPressed))
             $0?.addGestureRecognizer(longPressRecognizer)
             
-            configScreenIfIsEditingBirthday()
-            
-            pickerView.dataSource = self
-            pickerView.delegate = self
-            
-            monthTextField.inputView = pickerView
-            dayTextField.inputView = pickerView
-            
-            setupDoneButtonToolbar()
-            
         }
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
+        
+        configScreenIfIsEditingBirthday()
+        pickerView.dataSource = self
+        pickerView.delegate = self
+        monthTextField.inputView = pickerView
+        dayTextField.inputView = pickerView
+        setupDoneButtonToolbar()
+        
     }
     
     @objc func longPressed(sender: UILongPressGestureRecognizer) {
@@ -154,7 +122,7 @@ class BirthdayDataManagerViewController: UIViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Editar",
                                                             style: .plain,
                                                             target: self,
-                                                            action: #selector(editingDetails))
+                                                            action: #selector(editDetails))
         getPicture()
     }
     
@@ -173,7 +141,7 @@ class BirthdayDataManagerViewController: UIViewController {
         dayTextField.text = birthDayModel.day
     }
     
-    @objc func editingDetails() {
+    @objc func editDetails() {
         updateUIForEditingBirthday(true)
     }
     
@@ -221,18 +189,15 @@ class BirthdayDataManagerViewController: UIViewController {
         let person = personTextField.text ?? ""
         let month = monthTextField.text ?? ""
         let day = dayTextField.text ?? ""
-        if person.isEmpty || month.isEmpty || day.isEmpty {
-            saveButton.isEnabled = false
-        } else {
-            saveButton.isEnabled = true
-        }
+        let emptyFields = person.isEmpty || month.isEmpty || day.isEmpty
+        saveButton.isEnabled = !emptyFields
     }
     
     @IBAction func saveButtonPressed(_ sender: UIButton) {
         let name = personTextField.text ?? ""
         let month = monthTextField.text ?? ""
         let day = dayTextField.text ?? ""
-        guard let monthNumber = monthsToNumber[month],
+        guard let monthNumber = DateValuesProvider.monthsToNumber[month],
               let dayNumber = Int(day) else {
             return
         }
@@ -271,8 +236,9 @@ class BirthdayDataManagerViewController: UIViewController {
     }
     
     @objc func doneButtonPressed() {
-        dayTextField.resignFirstResponder()
-        monthTextField.resignFirstResponder()
+        
+        self.view.endEditing(true)
+        checkMonthAndDayTextFields()
         verifyTxt()
     }
     
@@ -286,11 +252,6 @@ class BirthdayDataManagerViewController: UIViewController {
         // Defina a UIToolbar como accessoryView para ambos os textFields
         dayTextField.inputAccessoryView = doneToolbar
         monthTextField.inputAccessoryView = doneToolbar
-    }
-    
-    @objc func donePressed() {
-        self.view.endEditing(true)
-        verifyTxt()
     }
     
     @IBAction func configImageAction(_ sender: UIButton) {
@@ -331,41 +292,59 @@ class BirthdayDataManagerViewController: UIViewController {
     }
 }
 
-extension BirthdayDataManagerViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIPickerViewDataSource & UIPickerViewDelegate{
+extension BirthdayDataManagerViewController: UIPickerViewDataSource {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         2
     }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        
         if component == 0 {
-            return months.count
+            return DateValuesProvider.months.count
         } else {
             return daysInMonth.count
         }
+        
     }
     
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        if component == 0 {
-            return months[row] // Exibe o mês
-        } else {
-            return daysInMonth[row] // Exibe o dia
+    func checkMonthAndDayTextFields() {
+        
+        if monthTextField.text?.isEmpty ?? true {
+            monthTextField.text = "Janeiro"
+        }
+        
+        if dayTextField.text?.isEmpty ?? true {
+            dayTextField.text = "1"
         }
     }
     
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        if component == 0 {
+            return DateValuesProvider.months[row]
+        } else {
+            return daysInMonth[row]
+        }
+    }
+}
+
+extension BirthdayDataManagerViewController: UIPickerViewDelegate {
+    
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         if component == 0 {
-            // Mês foi selecionado
-            selectedMonth = months[row]
+            selectedMonth = DateValuesProvider.months[row]
             updateDaysInMonth()
-            pickerView.reloadComponent(1) // Recarrega a coluna de dias
+            pickerView.reloadComponent(1)
             pickerView.selectRow(0, inComponent: 1, animated: true)
             monthTextField.text = selectedMonth
         } else {
-            // Dia foi selecionado
             let selectedDay = daysInMonth[row]
             dayTextField.text = selectedDay
         }
     }
+}
+
+extension BirthdayDataManagerViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate  {
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         picker.dismiss(animated: true, completion: nil)
@@ -411,7 +390,6 @@ private extension BirthdayDataManagerViewController {
         if let lastDay = calendar.date(from: components) {
             let lastDayOfMonth = calendar.component(.day, from: lastDay)
             
-            // Preenche a lista de dias com base no número de dias no mês
             daysInMonth = (1...lastDayOfMonth).map { String($0) }
         }
     }

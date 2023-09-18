@@ -21,11 +21,7 @@ class CustomTableViewCell: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-//        birthdayDayLabel.textColor = .black
         birthdayNameLabel.textColor = .black
-        // Initialization code
-        // praticamente igual viewDidLoad
-        // configuracao de layout fixo, cores, etc
     }
     
     func passData(day: String, name: String) {
