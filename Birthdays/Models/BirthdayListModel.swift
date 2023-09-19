@@ -9,6 +9,8 @@ import Foundation
 
 struct BirthdayListModel: Codable {
     var name: String
-    var birthdayDate: String
+    var day: String
+    var month: String
     let identifier: String
+    var birthday: Date
 }
