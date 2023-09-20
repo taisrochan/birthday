@@ -261,7 +261,7 @@ class BirthdayDataManagerViewController: UIViewController {
         let shouldOpenImageScreen = isEditingBirthday && !didClickButtonEdit
         if shouldOpenImageScreen {
             if let image = isThereImageForButton(sender: sender) {
-                openImageScreen(image: image, name: birthdayModel?.name.capitalized ?? "")
+                openImageScreen(image: image)
                 return
             }
         }
@@ -277,7 +277,7 @@ class BirthdayDataManagerViewController: UIViewController {
         }
     }
     
-    func openImageScreen(image: UIImage, name: String) {
+    func openImageScreen(image: UIImage) {
         let fullPictureScreen = ImageScreenViewController(imageReceveid: image, nameReceveid: birthdayModel?.name ?? "")
         navigationController?.pushViewController(fullPictureScreen, animated: true)
     }

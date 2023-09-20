@@ -8,7 +8,7 @@
 import UIKit
 
 class ImageScreenViewController: UIViewController {
-
+    
     @IBOutlet weak var fullPictureImageView: UIImageView!
     
     let imageReceveid: UIImage
@@ -28,7 +28,7 @@ class ImageScreenViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         fullPictureImageView.image = imageReceveid
-        navigationItem.title = nameReceveid
+        navigationItem.title = nameReceveid.capitalized
         
         let shareButton = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(shareButtonTapped))
         navigationItem.rightBarButtonItem = shareButton
@@ -37,11 +37,11 @@ class ImageScreenViewController: UIViewController {
     @objc func shareButtonTapped() {
         let imageToShare = fullPictureImageView.image
         let itemsToShare: [Any] = [imageToShare ?? ""]
-                   
-                   let activityViewController = UIActivityViewController(activityItems: itemsToShare, applicationActivities: nil)
-                   
-                   present(activityViewController, animated: true, completion: nil)
-        }
         
+        let activityViewController = UIActivityViewController(activityItems: itemsToShare, applicationActivities: nil)
+        
+        present(activityViewController, animated: true, completion: nil)
     }
+    
+}
 
