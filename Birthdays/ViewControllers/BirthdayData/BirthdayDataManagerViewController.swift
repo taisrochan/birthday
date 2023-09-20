@@ -27,6 +27,7 @@ class BirthdayDataManagerViewController: UIViewController {
     
     init(birthdayModel: BirthdayListModel? = nil) {
         self.birthdayModel = birthdayModel
+        self.isEditingBirthday = birthdayModel != nil
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -34,9 +35,11 @@ class BirthdayDataManagerViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    var didClickButtonEdit = false
     var pickerView = UIPickerView()
     var delegate: BirthdayDataViewControllerDelegate?
     let birthdayModel: BirthdayListModel?
+    let isEditingBirthday: Bool
     var images: [UIImage?] = []
     lazy var imagePickerController: UIImagePickerController = {
         let imagePickerVC = UIImagePickerController()
@@ -82,6 +85,7 @@ class BirthdayDataManagerViewController: UIViewController {
         monthTextField.inputView = pickerView
         dayTextField.inputView = pickerView
         setupDoneButtonToolbar()
+        
         
     }
     
@@ -137,11 +141,12 @@ class BirthdayDataManagerViewController: UIViewController {
         let monthLongString = dateFormatter.string(from: monthAsDate)
         
         personTextField.text = birthDayModel.name
-        monthTextField.text = monthLongString
+        monthTextField.text = monthLongString.capitalized
         dayTextField.text = birthDayModel.day
     }
     
     @objc func editDetails() {
+        didClickButtonEdit = true
         updateUIForEditingBirthday(true)
     }
     
@@ -151,9 +156,10 @@ class BirthdayDataManagerViewController: UIViewController {
         dayTextField.isEnabled = isEditing
         monthTextField.isEnabled = isEditing
         saveButton.isEnabled = isEditing
-        addPhotoButton1.isEnabled = isEditing
-        addPhotoButton2.isEnabled = isEditing
-        addPhotoButton3.isEnabled = isEditing
+        //        addPhotoButton1.isEnabled = isEditing
+        //        addPhotoButton2.isEnabled = isEditing
+        //        addPhotoButton3.isEnabled = isEditing
+        
     }
     
     func getPicture() {
@@ -255,11 +261,51 @@ class BirthdayDataManagerViewController: UIViewController {
     }
     
     @IBAction func configImageAction(_ sender: UIButton) {
-        let shouldAddImage = sender.currentImage == nil
-        if shouldAddImage {
-            presentImagePicker()
+        if isEditingBirthday {
+            if !didClickButtonEdit {
+                if let image = isThereImageForButton(sender: sender){
+                    openImageScreen(image: image)
+                    return
+                }
+            }
+        }
+        let isCreatingBirthday = !isEditingBirthday
+        if isCreatingBirthday || didClickButtonEdit {
+            let shouldAddImage = sender.currentImage == nil
+            if shouldAddImage {
+                presentImagePicker()
+            } else {
+                deleteImage(button: sender)
+            }
+        }
+    }
+    
+
+    func openImageScreen(image: UIImage) {
+        
+        let fullPictureScreen = ImageScreenViewController(imageReceveid: image)
+        
+        navigationController?.pushViewController(fullPictureScreen, animated: true)
+        
+    }
+    
+    func isThereImageForButton(sender: UIButton) -> UIImage? {
+        switch sender {
+        case addPhotoButton1:
+            return getImageOrNil(for: 0)
+        case addPhotoButton2:
+            return getImageOrNil(for: 1)
+        case addPhotoButton3:
+            return getImageOrNil(for: 2)
+        default: return nil
+        }
+    }
+    
+    func getImageOrNil(for index: Int) -> UIImage? {
+        if images.indices.contains(index) {
+            return images[index]
         } else {
-            deleteImage(button: sender)
+            return nil
         }
     }
     
@@ -327,6 +373,7 @@ extension BirthdayDataManagerViewController: UIPickerViewDataSource {
         }
     }
 }
+
 
 extension BirthdayDataManagerViewController: UIPickerViewDelegate {
     
