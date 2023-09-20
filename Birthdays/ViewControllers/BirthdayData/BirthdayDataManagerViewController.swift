@@ -23,7 +23,7 @@ class BirthdayDataManagerViewController: UIViewController {
     @IBOutlet weak var addPhotoButton3: UIButton!
     @IBOutlet weak var addPhotoButton2: UIButton!
     @IBOutlet weak var addPhotoButton1: UIButton!
-    
+    @IBOutlet weak var birthdayLabel: UILabel!
     
     init(birthdayModel: BirthdayListModel? = nil) {
         self.birthdayModel = birthdayModel
@@ -126,6 +126,8 @@ class BirthdayDataManagerViewController: UIViewController {
                                                             style: .plain,
                                                             target: self,
                                                             action: #selector(editDetails))
+        birthdayLabel.text = "Dados de Aniversário"
+        
         getPicture()
     }
     
@@ -259,7 +261,7 @@ class BirthdayDataManagerViewController: UIViewController {
         let shouldOpenImageScreen = isEditingBirthday && !didClickButtonEdit
         if shouldOpenImageScreen {
             if let image = isThereImageForButton(sender: sender) {
-                openImageScreen(image: image)
+                openImageScreen(image: image, name: birthdayModel?.name.capitalized ?? "")
                 return
             }
         }
@@ -275,9 +277,8 @@ class BirthdayDataManagerViewController: UIViewController {
         }
     }
     
-
-    func openImageScreen(image: UIImage) {
-        let fullPictureScreen = ImageScreenViewController(imageReceveid: image)
+    func openImageScreen(image: UIImage, name: String) {
+        let fullPictureScreen = ImageScreenViewController(imageReceveid: image, nameReceveid: birthdayModel?.name ?? "")
         navigationController?.pushViewController(fullPictureScreen, animated: true)
     }
     

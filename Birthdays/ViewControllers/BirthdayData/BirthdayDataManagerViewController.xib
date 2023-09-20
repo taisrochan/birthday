@@ -16,6 +16,7 @@
                 <outlet property="addPhotoOneImageView" destination="DF7-1Y-trb" id="WXO-uX-x7P"/>
                 <outlet property="addPhotoThreeImageView" destination="u8X-qO-gTl" id="dbi-ie-eL5"/>
                 <outlet property="addPhotoTwoImageView" destination="eoW-rf-SaP" id="McC-E4-rgi"/>
+                <outlet property="birthdayLabel" destination="laQ-jd-kMv" id="48E-mm-Irz"/>
                 <outlet property="dayTextField" destination="88i-Io-MVa" id="ngB-uN-1L7"/>
                 <outlet property="monthTextField" destination="oMC-hy-aL0" id="gtB-eO-Pqh"/>
                 <outlet property="personTextField" destination="nvY-bn-KWQ" id="4m3-sE-ToI"/>

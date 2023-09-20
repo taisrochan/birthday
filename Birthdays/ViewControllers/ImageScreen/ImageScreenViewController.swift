@@ -29,6 +29,19 @@ class ImageScreenViewController: UIViewController {
         super.viewDidLoad()
         fullPictureImageView.image = imageReceveid
         navigationItem.title = nameReceveid
+        
+        let shareButton = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(shareButtonTapped))
+        navigationItem.rightBarButtonItem = shareButton
+    }
+    
+    @objc func shareButtonTapped() {
+        let imageToShare = fullPictureImageView.image
+        let itemsToShare: [Any] = [imageToShare ?? ""]
+                   
+                   let activityViewController = UIActivityViewController(activityItems: itemsToShare, applicationActivities: nil)
+                   
+                   present(activityViewController, animated: true, completion: nil)
+        }
+        
     }
 
-}
