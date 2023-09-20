@@ -23,7 +23,7 @@ class BirthdayDataManagerViewController: UIViewController {
     @IBOutlet weak var addPhotoButton3: UIButton!
     @IBOutlet weak var addPhotoButton2: UIButton!
     @IBOutlet weak var addPhotoButton1: UIButton!
-    
+    @IBOutlet weak var birthdayLabel: UILabel!
     
     init(birthdayModel: BirthdayListModel? = nil) {
         self.birthdayModel = birthdayModel
@@ -86,7 +86,6 @@ class BirthdayDataManagerViewController: UIViewController {
         dayTextField.inputView = pickerView
         setupDoneButtonToolbar()
         
-        
     }
     
     @objc func longPressed(sender: UILongPressGestureRecognizer) {
@@ -127,6 +126,8 @@ class BirthdayDataManagerViewController: UIViewController {
                                                             style: .plain,
                                                             target: self,
                                                             action: #selector(editDetails))
+        birthdayLabel.text = "Dados de Aniversário"
+        
         getPicture()
     }
     
@@ -276,9 +277,8 @@ class BirthdayDataManagerViewController: UIViewController {
         }
     }
     
-
     func openImageScreen(image: UIImage) {
-        let fullPictureScreen = ImageScreenViewController(imageReceveid: image)
+        let fullPictureScreen = ImageScreenViewController(imageReceveid: image, nameReceveid: birthdayModel?.name ?? "")
         navigationController?.pushViewController(fullPictureScreen, animated: true)
     }
     
