@@ -208,7 +208,7 @@ class BirthdayDataManagerViewController: UIViewController {
         var birthdaydate = Date()
         
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy/MM/dd" // Formato da data com ano, mês e dia
+        dateFormatter.dateFormat = "yyyy/MM/dd"
         let calendar = Calendar.current
         let year = calendar.component(.year, from: Date())
         let dateComponents = DateComponents(year: year,
@@ -420,9 +420,8 @@ private extension BirthdayDataManagerViewController {
         
         let calendar = Calendar.current
         let year = calendar.component(.year, from: Date())
-        let month = selectedMonthIndex + 1 // Acrescentamos 1, pois os meses no componente começam em 0
+        let month = selectedMonthIndex + 1
         
-        // Obtém o último dia do mês atual
         var components = DateComponents()
         components.year = year
         components.month = month + 1

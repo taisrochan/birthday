@@ -23,15 +23,22 @@ extension UserDefaults {
         }
     }
     
-    //    var birthdatListSaved: Codable {
-    //        get {
-    //            guard
-    //                let data = UserDefaults.standard.data(forKey: birthdayKey),
-    //                let savedItems = try? JSONDecoder().decode([BirthdayListModel].self, from: data)
-    //            else {
-    //                return
-    //            }
-    
+    var birthdayList: [[BirthdayListModel]] {
+        set {
+            if let encondedData = try? JSONEncoder().encode(newValue) {
+                setValue(encondedData, forKey: UserDefaultsKeys.birthdayListSaved.rawValue)
+            }
+        }
+        get {
+            let key = UserDefaultsKeys.birthdayListSaved.rawValue
+            if let data = UserDefaults.standard.data(forKey: key),
+               let savedItems = try? JSONDecoder().decode([[BirthdayListModel]].self, from: data) {
+                return savedItems
+            } else {
+                return []
+            }
+        }
+    }
 }
 
 extension UserDefaults {

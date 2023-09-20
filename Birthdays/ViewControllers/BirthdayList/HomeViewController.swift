@@ -13,7 +13,8 @@ class HomeViewController: UIViewController {
     let tableView = UITableView()
     var birthdayDataMatrix: [[BirthdayListModel]] = [] {
         didSet {
-            saveItems()
+            UserDefaults.standard.birthdayList = birthdayDataMatrix
+
         }
     }
     
@@ -61,12 +62,8 @@ class HomeViewController: UIViewController {
     }
     
     func fetchBirthdayData() {
-        guard
-            let data = UserDefaults.standard.data(forKey: birthdayKey),
-            let savedItems = try? JSONDecoder().decode([[BirthdayListModel]].self, from: data)
-        else {
-            return
-        }
+        
+        let savedItems = UserDefaults.standard.birthdayList.filter { !$0.isEmpty }
         birthdayDataMatrix = savedItems
         tableView.reloadData()
         verifyIfThereIsValueOnTableView()
@@ -78,12 +75,6 @@ class HomeViewController: UIViewController {
             tableView.isHidden = true
         } else {
             tableView.isHidden = false
-        }
-    }
-    
-    func saveItems() {
-        if let encondedData = try? JSONEncoder().encode(birthdayDataMatrix) {
-            UserDefaults.standard.set(encondedData, forKey: birthdayKey)
         }
     }
     
@@ -111,19 +102,17 @@ class HomeViewController: UIViewController {
         guard birthdayDataMatrix.count > 0 else {
             return
         }
-        //1. Ordernar os meses das sections em ordem crescente
+      
         let orderedMatrix = birthdayDataMatrix.sorted {
             (Int($0[0].month) ?? 0) < (Int($1[0].month) ?? 0)
         }
         birthdayDataMatrix = orderedMatrix
-        
-        //2. Pegar date como String da data de hoje
+  
         let currentDate = Date()
         let dateFormater = DateFormatter()
         dateFormater.dateFormat = "MM"
         let month = dateFormater.string(from: currentDate)
         
-        //Descobrir qual indice da matriz em que o array corresponde ao mês atual
         var indice: Int?
         for j in 0..<birthdayDataMatrix.count {
             let indiceMont = birthdayDataMatrix[j][0].month
@@ -135,12 +124,9 @@ class HomeViewController: UIViewController {
         guard let indice = indice else {
             return
         }
-        // Pegar fatia da matriz que começa no índice descoberto e copiar essa fatia para uma nova propriedade
-        
+       
         let arraySlice = birthdayDataMatrix[indice..<birthdayDataMatrix.endIndex]
         print(arraySlice)
-        
-        // Remover essa fatia da matriz
         
         let lastIndex = birthdayDataMatrix.count - 1
         
@@ -148,8 +134,6 @@ class HomeViewController: UIViewController {
             birthdayDataMatrix.remove(at: j)
         }
         print(birthdayDataMatrix)
-        
-        // Inserir a copia no inicio da matriz
         
         birthdayDataMatrix.insert(contentsOf: arraySlice, at: 0)
     }
@@ -234,14 +218,15 @@ extension HomeViewController: BirthdayDataViewControllerDelegate {
     }
     
     func editBirthdayInfo(name: String, day: String, id: String, month: String, birthday: Date) {
-        for j in 0..<birthdayDataMatrix.count {
-            for i in 0...(birthdayDataMatrix[j].count-1) {
+        outerLoop: for j in 0..<birthdayDataMatrix.count {
+
+             for i in 0...(birthdayDataMatrix[j].count-1) {
                 if birthdayDataMatrix[j][i].identifier == id {
                     birthdayDataMatrix[j].remove(at: i)
                     if birthdayDataMatrix[j].isEmpty {
                         birthdayDataMatrix.remove(at: j)
                     }
-                    break
+                    break outerLoop
                 }
             }
         }
@@ -276,9 +261,3 @@ private extension HomeViewController {
         verifyIfThereIsValueOnTableView()
     }
 }
-
-    
-
-
-
-
