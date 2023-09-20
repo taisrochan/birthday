@@ -12,9 +12,12 @@ class ImageScreenViewController: UIViewController {
     @IBOutlet weak var fullPictureImageView: UIImageView!
     
     let imageReceveid: UIImage
+    let nameReceveid: String
     
-    init(imageReceveid: UIImage) {
+    
+    init(imageReceveid: UIImage, nameReceveid: String) {
         self.imageReceveid = imageReceveid
+        self.nameReceveid = nameReceveid
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -26,10 +29,8 @@ class ImageScreenViewController: UIViewController {
         super.viewDidLoad()
         
         fullPictureImageView.image = imageReceveid
-        //pode ser que não esteja certo
-
+        navigationItem.title = nameReceveid
+       
     }
-
-
 
 }

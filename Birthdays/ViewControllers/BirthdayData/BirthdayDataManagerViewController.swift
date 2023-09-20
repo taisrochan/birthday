@@ -86,7 +86,6 @@ class BirthdayDataManagerViewController: UIViewController {
         dayTextField.inputView = pickerView
         setupDoneButtonToolbar()
         
-        
     }
     
     @objc func longPressed(sender: UILongPressGestureRecognizer) {
