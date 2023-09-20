@@ -156,10 +156,7 @@ class BirthdayDataManagerViewController: UIViewController {
         dayTextField.isEnabled = isEditing
         monthTextField.isEnabled = isEditing
         saveButton.isEnabled = isEditing
-        //        addPhotoButton1.isEnabled = isEditing
-        //        addPhotoButton2.isEnabled = isEditing
-        //        addPhotoButton3.isEnabled = isEditing
-        
+
     }
     
     func getPicture() {
@@ -255,20 +252,19 @@ class BirthdayDataManagerViewController: UIViewController {
         
         doneToolbar.items = [flexSpace, doneButton]
         
-        // Defina a UIToolbar como accessoryView para ambos os textFields
         dayTextField.inputAccessoryView = doneToolbar
         monthTextField.inputAccessoryView = doneToolbar
     }
     
     @IBAction func configImageAction(_ sender: UIButton) {
-        if isEditingBirthday {
-            if !didClickButtonEdit {
-                if let image = isThereImageForButton(sender: sender){
-                    openImageScreen(image: image)
-                    return
-                }
+        let shouldOpenImageScreen = isEditingBirthday && !didClickButtonEdit
+        if shouldOpenImageScreen {
+            if let image = isThereImageForButton(sender: sender) {
+                openImageScreen(image: image)
+                return
             }
         }
+        
         let isCreatingBirthday = !isEditingBirthday
         if isCreatingBirthday || didClickButtonEdit {
             let shouldAddImage = sender.currentImage == nil
@@ -282,11 +278,8 @@ class BirthdayDataManagerViewController: UIViewController {
     
 
     func openImageScreen(image: UIImage) {
-        
         let fullPictureScreen = ImageScreenViewController(imageReceveid: image)
-        
         navigationController?.pushViewController(fullPictureScreen, animated: true)
-        
     }
     
     func isThereImageForButton(sender: UIButton) -> UIImage? {

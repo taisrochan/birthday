@@ -24,10 +24,7 @@ class ImageScreenViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         fullPictureImageView.image = imageReceveid
-        //pode ser que não esteja certo
-
     }
 
 
