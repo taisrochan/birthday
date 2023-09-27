@@ -7,6 +7,7 @@
 
 import UIKit
 
+
 class YearDivisorTableViewCell: UITableViewCell {
     override var reuseIdentifier: String? {
         "yearCell"

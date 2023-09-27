@@ -69,7 +69,7 @@ class HomeViewController: UIViewController {
             tableView.isHidden = false
         }
     }
-
+    
     func sortMonthsAndBirthdays() {
         guard birthdayDataMatrix.count > 0 else {
             return
@@ -143,14 +143,14 @@ class HomeViewController: UIViewController {
     }
     
     func addNextYearCell() {
-        outerLoop: for j in 0..<birthdayDataMatrix.count {
-            for i in 0...(birthdayDataMatrix[j].count-1) {
-                if birthdayDataMatrix[j][i].isDivisor {
-                    birthdayDataMatrix[j].remove(at: i)
-                    break outerLoop
-                }
+    outerLoop: for j in 0..<birthdayDataMatrix.count {
+        for i in 0...(birthdayDataMatrix[j].count-1) {
+            if birthdayDataMatrix[j][i].isDivisor {
+                birthdayDataMatrix[j].remove(at: i)
+                break outerLoop
             }
         }
+    }
         deleteEmptyArraysIfExisted()
         let yearDivisorModel = BirthdayListModel.createDivisorModel()
         guard let lastIndice = birthdayDataMatrix.indices.last else {
@@ -167,7 +167,6 @@ class HomeViewController: UIViewController {
         }
     }
 }
-
 extension HomeViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let element = birthdayDataMatrix[indexPath.section][indexPath.row]
@@ -224,7 +223,9 @@ extension HomeViewController: UITableViewDataSource {
         let element = birthdayDataMatrix[indexPath.section][indexPath.row]
         if element.isDivisor {
             let newCell = tableView.dequeueReusableCell(withIdentifier: "yearCell", for: indexPath) as! YearDivisorTableViewCell
-            newCell.pass(year: "2024")
+            let nextYear = Date.now.year + 1
+            let year = nextYear.asString
+            newCell.pass(year: year)
             newCell.isUserInteractionEnabled = false
             cell = newCell
         } else {
@@ -260,17 +261,17 @@ extension HomeViewController: BirthdayDataViewControllerDelegate {
     }
     
     func editBirthdayInfo(name: String, day: Int, id: String, month: Int) {
-        outerLoop: for j in 0..<birthdayDataMatrix.count {
-            for i in 0...(birthdayDataMatrix[j].count-1) {
-                if birthdayDataMatrix[j][i].identifier == id {
-                    birthdayDataMatrix[j].remove(at: i)
-                    if birthdayDataMatrix[j].isEmpty {
-                        birthdayDataMatrix.remove(at: j)
-                    }
-                    break outerLoop
+    outerLoop: for j in 0..<birthdayDataMatrix.count {
+        for i in 0...(birthdayDataMatrix[j].count-1) {
+            if birthdayDataMatrix[j][i].identifier == id {
+                birthdayDataMatrix[j].remove(at: i)
+                if birthdayDataMatrix[j].isEmpty {
+                    birthdayDataMatrix.remove(at: j)
                 }
+                break outerLoop
             }
         }
+    }
         passBirthdayInfo(name: name, day: day, id: id, month: month)
     }
 }
