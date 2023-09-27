@@ -13,4 +13,13 @@ struct BirthdayListModel: Codable {
     var month: String
     let identifier: String
     var birthday: Date
+    
+    var isDivisor = false
+    
+    static func createDivisorModel() -> BirthdayListModel {
+        let valueAlwaysBiggerThanADay = "32"
+        var model = BirthdayListModel(name: "", day: valueAlwaysBiggerThanADay, month: "", identifier: "", birthday: Date())
+        model.isDivisor = true
+        return model
+    }
 }
