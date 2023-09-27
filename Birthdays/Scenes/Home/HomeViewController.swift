@@ -14,15 +14,13 @@ class HomeViewController: UIViewController {
     var birthdayDataMatrix: [[BirthdayListModel]] = [] {
         didSet {
             UserDefaults.standard.birthdayList = birthdayDataMatrix
-
         }
     }
-    
-    let birthdayKey: String = "birthdayData_list"
     
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.register(UINib(nibName: "CustomTableViewCell", bundle: nil), forCellReuseIdentifier: "birthdayCell")
+        tableView.register(UINib(nibName: "YearDivisorTableViewCell", bundle: nil), forCellReuseIdentifier: "yearCell")
         tableView.rowHeight = UITableView.automaticDimension
         tableView.separatorColor = .clear
         view.backgroundColor = .white
@@ -91,7 +89,7 @@ class HomeViewController: UIViewController {
         for j in 0..<birthdayDataMatrix.count{
             let month = birthdayDataMatrix[j]
             let orderedBirthdays = month.sorted {
-                $0.day < $1.day
+              $0.day < $1.day
             }
             birthdayDataMatrix.remove(at: j)
             birthdayDataMatrix.insert(orderedBirthdays, at: j)
@@ -173,11 +171,12 @@ extension HomeViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "birthdayCell", for: indexPath) as! CustomTableViewCell
+        //let cell = tableView.dequeueReusableCell(withIdentifier: "birthdayCell", for: indexPath) as! CustomTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "yearCell", for: indexPath) as! YearDivisorTableViewCell
         
         cell.selectionStyle = .none
         let element = birthdayDataMatrix[indexPath.section][indexPath.row]
-        cell.passData(day: element.day, name: element.name)
+        //cell.passData(day: element.day, name: element.name)
         return cell
     }
     
