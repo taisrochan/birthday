@@ -69,7 +69,7 @@ class HomeViewController: UIViewController {
             tableView.isHidden = false
         }
     }
-    
+
     func sortMonthsAndBirthdays() {
         guard birthdayDataMatrix.count > 0 else {
             return
@@ -87,7 +87,7 @@ class HomeViewController: UIViewController {
     
     func ordenateMonthsInSections() {
         let orderedMatrix = birthdayDataMatrix.sorted {
-            (Int($0[0].month) ?? 0) < (Int($1[0].month) ?? 0)
+            (Int($0[0].month) ) < (Int($1[0].month) )
         }
         birthdayDataMatrix = orderedMatrix
     }
@@ -101,7 +101,7 @@ class HomeViewController: UIViewController {
         var indice: Int?
         for j in 0..<birthdayDataMatrix.count {
             let indiceMont = birthdayDataMatrix[j][0].month
-            if Int(indiceMont) ?? 0 >= Int(month) ?? 0 {
+            if Int(indiceMont) >= Int(month) ?? 0 {
                 indice = j
                 break
             }
@@ -131,7 +131,7 @@ class HomeViewController: UIViewController {
         for j in 0..<birthdayDataMatrix.count{
             let month = birthdayDataMatrix[j]
             let orderedBirthdays = month.sorted {
-                Int($0.day) ?? 0 < Int($1.day) ?? 0
+                Int($0.day) < Int($1.day)
             }
             birthdayDataMatrix.remove(at: j)
             birthdayDataMatrix.insert(orderedBirthdays, at: j)
@@ -175,6 +175,24 @@ extension HomeViewController: UITableViewDelegate {
         navigationController?.pushViewController(birthdayDataViewController, animated: true)
         birthdayDataViewController.delegate = self
     }
+    
+    func tableview(_tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        return .delete
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            showDeleteCellAlert(indexPath: indexPath)
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        let cell = tableView.cellForRow(at: indexPath)
+        if cell is YearDivisorTableViewCell {
+            return false
+        }
+        return true
+    }
 }
 
 extension HomeViewController: UITableViewDataSource {
@@ -207,6 +225,7 @@ extension HomeViewController: UITableViewDataSource {
         if element.isDivisor {
             let newCell = tableView.dequeueReusableCell(withIdentifier: "yearCell", for: indexPath) as! YearDivisorTableViewCell
             newCell.pass(year: "2024")
+            newCell.isUserInteractionEnabled = false
             cell = newCell
         } else {
             cell = tableView.dequeueReusableCell(withIdentifier: "birthdayCell", for: indexPath) as! CustomTableViewCell
@@ -214,16 +233,6 @@ extension HomeViewController: UITableViewDataSource {
         }
         cell.selectionStyle = .none
         return cell
-    }
-    
-    func tableview(_tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
-        return .delete
-    }
-    
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            showDeleteCellAlert(indexPath: indexPath)
-        }
     }
 }
 
@@ -284,6 +293,7 @@ private extension HomeViewController {
     func deleteCell(indexPath: IndexPath) {
         birthdayDataMatrix[indexPath.section].remove(at: indexPath.row)
         deleteEmptyArraysIfExisted()
+        addNextYearCell()
         saveBirthdayList()
         tableView.reloadData()
         verifyIfThereIsValueOnTableView()
