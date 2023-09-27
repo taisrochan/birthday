@@ -11,20 +11,10 @@ class HomeViewController: UIViewController {
     @IBOutlet weak var emptyTableViewLabel: UILabel!
     
     let tableView = UITableView()
-    var birthdayDataMatrix: [[BirthdayListModel]] = [] {
-        didSet {
-            UserDefaults.standard.birthdayList = birthdayDataMatrix
-
-        }
-    }
-    
-    let birthdayKey: String = "birthdayData_list"
+    var birthdayDataMatrix: [[BirthdayListModel]] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.register(UINib(nibName: "CustomTableViewCell", bundle: nil), forCellReuseIdentifier: "birthdayCell")
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.separatorColor = .clear
         view.backgroundColor = .white
         configTableView()
         configNavigationBar()
@@ -48,7 +38,10 @@ class HomeViewController: UIViewController {
         view.addSubview(tableView)
         tableView.delegate = self
         tableView.dataSource = self
-        
+        tableView.register(UINib(nibName: "CustomTableViewCell", bundle: nil), forCellReuseIdentifier: "birthdayCell")
+        tableView.register(UINib(nibName: "YearDivisorTableViewCell", bundle: nil), forCellReuseIdentifier: "yearCell")
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.separatorColor = .clear
     }
     
     func configNavigationBar() {
@@ -62,7 +55,6 @@ class HomeViewController: UIViewController {
     }
     
     func fetchBirthdayData() {
-        
         let savedItems = UserDefaults.standard.birthdayList.filter { !$0.isEmpty }
         birthdayDataMatrix = savedItems
         tableView.reloadData()
@@ -79,35 +71,28 @@ class HomeViewController: UIViewController {
     }
     
     func sortMonthsAndBirthdays() {
-        ordenateMonthsInSections()
-        ordenateBirthdayDatesInMonths()
-    }
-    
-    func ordenateBirthdayDatesInMonths() {
-        
         guard birthdayDataMatrix.count > 0 else {
             return
         }
-        for j in 0..<birthdayDataMatrix.count{
-            let month = birthdayDataMatrix[j]
-            let orderedBirthdays = month.sorted {
-                $0.day < $1.day
-            }
-            birthdayDataMatrix.remove(at: j)
-            birthdayDataMatrix.insert(orderedBirthdays, at: j)
-        }
+        deleteEmptyArraysIfExisted()
+        ordenateMonthsInSections()
+        manageNextYearCell()
+        passNextMonthsFromThisYearToMatrixBeggining()
+        ordenateBirthdayDatesInsideMonths()
+    }
+    
+    func deleteEmptyArraysIfExisted() {
+        birthdayDataMatrix = birthdayDataMatrix.filter { $0.count > 0 }
     }
     
     func ordenateMonthsInSections() {
-        guard birthdayDataMatrix.count > 0 else {
-            return
-        }
-      
         let orderedMatrix = birthdayDataMatrix.sorted {
-            (Int($0[0].month) ?? 0) < (Int($1[0].month) ?? 0)
+            (Int($0[0].month) ) < (Int($1[0].month) )
         }
         birthdayDataMatrix = orderedMatrix
-  
+    }
+    
+    func passNextMonthsFromThisYearToMatrixBeggining() {
         let currentDate = Date()
         let dateFormater = DateFormatter()
         dateFormater.dateFormat = "MM"
@@ -116,7 +101,7 @@ class HomeViewController: UIViewController {
         var indice: Int?
         for j in 0..<birthdayDataMatrix.count {
             let indiceMont = birthdayDataMatrix[j][0].month
-            if Int(indiceMont) ?? 0 >= Int(month) ?? 0 {
+            if Int(indiceMont) >= Int(month) ?? 0 {
                 indice = j
                 break
             }
@@ -124,7 +109,7 @@ class HomeViewController: UIViewController {
         guard let indice = indice else {
             return
         }
-       
+        
         let arraySlice = birthdayDataMatrix[indice..<birthdayDataMatrix.endIndex]
         print(arraySlice)
         
@@ -138,14 +123,78 @@ class HomeViewController: UIViewController {
         birthdayDataMatrix.insert(contentsOf: arraySlice, at: 0)
     }
     
+    func ordenateBirthdayDatesInsideMonths() {
+        
+        guard birthdayDataMatrix.count > 0 else {
+            return
+        }
+        for j in 0..<birthdayDataMatrix.count{
+            let month = birthdayDataMatrix[j]
+            let orderedBirthdays = month.sorted {
+                Int($0.day) < Int($1.day)
+            }
+            birthdayDataMatrix.remove(at: j)
+            birthdayDataMatrix.insert(orderedBirthdays, at: j)
+        }
+    }
+    
+    func saveBirthdayList() {
+        UserDefaults.standard.birthdayList = birthdayDataMatrix
+    }
+    
+    func manageNextYearCell() {
+    outerLoop: for j in 0..<birthdayDataMatrix.count {
+        for i in 0...(birthdayDataMatrix[j].count-1) {
+            if birthdayDataMatrix[j][i].isDivisor {
+                birthdayDataMatrix[j].remove(at: i)
+                break outerLoop
+            }
+        }
+    }
+        deleteEmptyArraysIfExisted()
+        let yearDivisorModel = BirthdayListModel.createDivisorModel()
+        guard let lastIndice = birthdayDataMatrix.indices.last else {
+            return
+        }
+        let currentMonth = Date.now.month
+        let lastMonth = birthdayDataMatrix[lastIndice][0].month
+        let thereIsMonthBiggerThanCurrentMonth = lastMonth > currentMonth
+        let firstMonth = birthdayDataMatrix[0][0].month
+        let thereIsMonthSmallerThanCurrentMonth = currentMonth > firstMonth
+        let shouldAddYearCell = thereIsMonthBiggerThanCurrentMonth && thereIsMonthSmallerThanCurrentMonth
+        if shouldAddYearCell {
+            birthdayDataMatrix[lastIndice].append(yearDivisorModel)
+        }
+    }
 }
-
 extension HomeViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let isDivisor = birthdayDataMatrix[indexPath.section][indexPath.row].isDivisor
+        guard isDivisor == false else {
+            return
+        }
         let element = birthdayDataMatrix[indexPath.section][indexPath.row]
         let birthdayDataViewController = BirthdayDataManagerViewController(birthdayModel: element)
         navigationController?.pushViewController(birthdayDataViewController, animated: true)
         birthdayDataViewController.delegate = self
+    }
+    
+    func tableview(_tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        return .delete
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            showDeleteCellAlert(indexPath: indexPath)
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        let cell = tableView.cellForRow(at: indexPath)
+        if cell is YearDivisorTableViewCell {
+            return false
+        }
+        return true
     }
 }
 
@@ -159,7 +208,7 @@ extension HomeViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         
-        let month = birthdayDataMatrix[section][0].month
+        let month = birthdayDataMatrix[section][0].month.asString
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MM"
@@ -173,29 +222,27 @@ extension HomeViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "birthdayCell", for: indexPath) as! CustomTableViewCell
+        var cell: UITableViewCell
         
-        cell.selectionStyle = .none
         let element = birthdayDataMatrix[indexPath.section][indexPath.row]
-        cell.passData(day: element.day, name: element.name)
-        return cell
-    }
-    
-    func tableview(_tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
-        return .delete
-        
-    }
-    
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            showDeleteCellAlert(indexPath: indexPath)
+        if element.isDivisor {
+            let newCell = tableView.dequeueReusableCell(withIdentifier: "yearCell", for: indexPath) as! YearDivisorTableViewCell
+            let nextYear = Date.now.year + 1
+            let year = nextYear.asString
+            newCell.pass(year: year)
+            cell = newCell
+        } else {
+            cell = tableView.dequeueReusableCell(withIdentifier: "birthdayCell", for: indexPath) as! CustomTableViewCell
+            (cell as? CustomTableViewCell)?.passData(day: element.day, name: element.name)
         }
+        cell.selectionStyle = .none
+        return cell
     }
 }
 
 extension HomeViewController: BirthdayDataViewControllerDelegate {
-    func passBirthdayInfo(name: String, day: String, id: String, month: String, birthday: Date) {
-        let newBirthday = BirthdayListModel(name: name, day: day, month: month, identifier: id, birthday: birthday)
+    func passBirthdayInfo(name: String, day: Int, id: String, month: Int) {
+        let newBirthday = BirthdayListModel(name: name, day: day, month: month, identifier: id)
         
         var didAppendMonth = false
         birthdayDataMatrix.enumerated().forEach { (index, monthArray) in
@@ -210,29 +257,25 @@ extension HomeViewController: BirthdayDataViewControllerDelegate {
         if didAppendMonth == false {
             birthdayDataMatrix.append([newBirthday])
         }
+        saveBirthdayList()
         sortMonthsAndBirthdays()
         tableView.reloadData()
         verifyIfThereIsValueOnTableView()
-        
-        
     }
     
-    func editBirthdayInfo(name: String, day: String, id: String, month: String, birthday: Date) {
-        outerLoop: for j in 0..<birthdayDataMatrix.count {
-
-             for i in 0...(birthdayDataMatrix[j].count-1) {
-                if birthdayDataMatrix[j][i].identifier == id {
-                    birthdayDataMatrix[j].remove(at: i)
-                    if birthdayDataMatrix[j].isEmpty {
-                        birthdayDataMatrix.remove(at: j)
-                    }
-                    break outerLoop
+    func editBirthdayInfo(name: String, day: Int, id: String, month: Int) {
+    outerLoop: for j in 0..<birthdayDataMatrix.count {
+        for i in 0...(birthdayDataMatrix[j].count-1) {
+            if birthdayDataMatrix[j][i].identifier == id {
+                birthdayDataMatrix[j].remove(at: i)
+                if birthdayDataMatrix[j].isEmpty {
+                    birthdayDataMatrix.remove(at: j)
                 }
+                break outerLoop
             }
         }
-        
-        passBirthdayInfo(name: name, day: day, id: id, month: month, birthday: birthday)
-        
+    }
+        passBirthdayInfo(name: name, day: day, id: id, month: month)
     }
 }
 
@@ -252,11 +295,10 @@ private extension HomeViewController {
     }
     
     func deleteCell(indexPath: IndexPath) {
-       birthdayDataMatrix[indexPath.section].remove(at: indexPath.row)
-        if birthdayDataMatrix[indexPath.section].isEmpty {
-            birthdayDataMatrix.remove(at: indexPath.section)
-        }
-        
+        birthdayDataMatrix[indexPath.section].remove(at: indexPath.row)
+        deleteEmptyArraysIfExisted()
+        manageNextYearCell()
+        saveBirthdayList()
         tableView.reloadData()
         verifyIfThereIsValueOnTableView()
     }

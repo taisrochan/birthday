@@ -24,8 +24,8 @@ class CustomTableViewCell: UITableViewCell {
         birthdayNameLabel.textColor = .black
     }
     
-    func passData(day: String, name: String) {
-        birthdayDayLabel.text = day
+    func passData(day: Int, name: String) {
+        birthdayDayLabel.text = day.asString
         birthdayNameLabel.text = "-  \(name)"
     }
 }
