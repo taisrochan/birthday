@@ -76,7 +76,7 @@ class HomeViewController: UIViewController {
         }
         deleteEmptyArraysIfExisted()
         ordenateMonthsInSections()
-        addNextYearCell()
+        manageNextYearCell()
         passNextMonthsFromThisYearToMatrixBeggining()
         ordenateBirthdayDatesInsideMonths()
     }
@@ -142,7 +142,7 @@ class HomeViewController: UIViewController {
         UserDefaults.standard.birthdayList = birthdayDataMatrix
     }
     
-    func addNextYearCell() {
+    func manageNextYearCell() {
     outerLoop: for j in 0..<birthdayDataMatrix.count {
         for i in 0...(birthdayDataMatrix[j].count-1) {
             if birthdayDataMatrix[j][i].isDivisor {
@@ -169,6 +169,10 @@ class HomeViewController: UIViewController {
 }
 extension HomeViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let isDivisor = birthdayDataMatrix[indexPath.section][indexPath.row].isDivisor
+        guard isDivisor == false else {
+            return
+        }
         let element = birthdayDataMatrix[indexPath.section][indexPath.row]
         let birthdayDataViewController = BirthdayDataManagerViewController(birthdayModel: element)
         navigationController?.pushViewController(birthdayDataViewController, animated: true)
@@ -226,7 +230,7 @@ extension HomeViewController: UITableViewDataSource {
             let nextYear = Date.now.year + 1
             let year = nextYear.asString
             newCell.pass(year: year)
-            newCell.isUserInteractionEnabled = false
+            //newCell.isUserInteractionEnabled = false
             cell = newCell
         } else {
             cell = tableView.dequeueReusableCell(withIdentifier: "birthdayCell", for: indexPath) as! CustomTableViewCell
@@ -294,7 +298,7 @@ private extension HomeViewController {
     func deleteCell(indexPath: IndexPath) {
         birthdayDataMatrix[indexPath.section].remove(at: indexPath.row)
         deleteEmptyArraysIfExisted()
-        addNextYearCell()
+        manageNextYearCell()
         saveBirthdayList()
         tableView.reloadData()
         verifyIfThereIsValueOnTableView()
