@@ -8,8 +8,8 @@
 import UIKit
 
 protocol BirthdayDataViewControllerDelegate {
-    func passBirthdayInfo(name: String, day: String, id: String, month: String, birthday: Date)
-    func editBirthdayInfo(name: String, day: String, id: String, month: String, birthday: Date)
+    func passBirthdayInfo(name: String, day: Int, id: String, month: Int)
+    func editBirthdayInfo(name: String, day: Int, id: String, month: Int)
 }
 
 class BirthdayDataManagerViewController: UIViewController {
@@ -132,7 +132,7 @@ class BirthdayDataManagerViewController: UIViewController {
     }
     
     func fillBirthdayInfos(birthDayModel: BirthdayListModel) {
-        let monthShortString = birthDayModel.month
+        let monthShortString = birthDayModel.month.asString
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MM"
         guard let monthAsDate = dateFormatter.date(from: monthShortString) else {
@@ -143,7 +143,7 @@ class BirthdayDataManagerViewController: UIViewController {
         
         personTextField.text = birthDayModel.name
         monthTextField.text = monthLongString.capitalized
-        dayTextField.text = birthDayModel.day
+        dayTextField.text = birthDayModel.day.asString
     }
     
     @objc func editDetails() {
@@ -198,24 +198,11 @@ class BirthdayDataManagerViewController: UIViewController {
     }
     
     @IBAction func saveButtonPressed(_ sender: UIButton) {
-        let name = personTextField.text ?? ""
-        let month = monthTextField.text ?? ""
-        let day = dayTextField.text ?? ""
-        guard let monthNumber = DateValuesProvider.monthsToNumber[month],
-              let dayNumber = Int(day) else {
+        guard let name = personTextField.text,
+              let monthString = monthTextField.text,
+              let day = Int(dayTextField.text ?? "grw"),
+              let monthNumber = DateValuesProvider.monthsToNumber[monthString] else {
             return
-        }
-        var birthdaydate = Date()
-        
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy/MM/dd"
-        let calendar = Calendar.current
-        let year = calendar.component(.year, from: Date())
-        let dateComponents = DateComponents(year: year,
-                                            month: monthNumber,
-                                            day: dayNumber)
-        if let date = calendar.date(from: dateComponents) {
-            birthdaydate = date
         }
         
         let imagesToSave = images.compactMap { $0 }
@@ -224,15 +211,13 @@ class BirthdayDataManagerViewController: UIViewController {
             delegate?.editBirthdayInfo(name: name,
                                        day: day,
                                        id: model.identifier,
-                                       month: String(monthNumber),
-                                       birthday: model.birthday)
+                                       month: monthNumber)
         } else {
             let id = UUID().uuidString
             delegate?.passBirthdayInfo(name: name,
                                        day: day,
                                        id: id,
-                                       month: String(monthNumber),
-                                       birthday: birthdaydate)
+                                       month: monthNumber)
             UserDefaults.standard.set(imagesToSave, forKey: id)
         }
         

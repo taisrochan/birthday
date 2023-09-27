@@ -156,7 +156,15 @@ class HomeViewController: UIViewController {
         guard let lastIndice = birthdayDataMatrix.indices.last else {
             return
         }
-        birthdayDataMatrix[lastIndice].append(yearDivisorModel)
+        let currentMonth = Date.now.month
+        let lastMonth = birthdayDataMatrix[lastIndice][0].month
+        let thereIsMonthBiggerThanCurrentMonth = lastMonth > currentMonth
+        let firstMonth = birthdayDataMatrix[0][0].month
+        let thereIsMonthSmallerThanCurrentMonth = currentMonth > firstMonth
+        let shouldAddYearCell = thereIsMonthBiggerThanCurrentMonth && thereIsMonthSmallerThanCurrentMonth
+        if shouldAddYearCell {
+            birthdayDataMatrix[lastIndice].append(yearDivisorModel)
+        }
     }
 }
 
@@ -179,7 +187,7 @@ extension HomeViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         
-        let month = birthdayDataMatrix[section][0].month
+        let month = birthdayDataMatrix[section][0].month.asString
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MM"
@@ -220,8 +228,8 @@ extension HomeViewController: UITableViewDataSource {
 }
 
 extension HomeViewController: BirthdayDataViewControllerDelegate {
-    func passBirthdayInfo(name: String, day: String, id: String, month: String, birthday: Date) {
-        let newBirthday = BirthdayListModel(name: name, day: day, month: month, identifier: id, birthday: birthday)
+    func passBirthdayInfo(name: String, day: Int, id: String, month: Int) {
+        let newBirthday = BirthdayListModel(name: name, day: day, month: month, identifier: id)
         
         var didAppendMonth = false
         birthdayDataMatrix.enumerated().forEach { (index, monthArray) in
@@ -242,7 +250,7 @@ extension HomeViewController: BirthdayDataViewControllerDelegate {
         verifyIfThereIsValueOnTableView()
     }
     
-    func editBirthdayInfo(name: String, day: String, id: String, month: String, birthday: Date) {
+    func editBirthdayInfo(name: String, day: Int, id: String, month: Int) {
         outerLoop: for j in 0..<birthdayDataMatrix.count {
             for i in 0...(birthdayDataMatrix[j].count-1) {
                 if birthdayDataMatrix[j][i].identifier == id {
@@ -254,8 +262,7 @@ extension HomeViewController: BirthdayDataViewControllerDelegate {
                 }
             }
         }
-        passBirthdayInfo(name: name, day: day, id: id, month: month, birthday: birthday)
-        
+        passBirthdayInfo(name: name, day: day, id: id, month: month)
     }
 }
 
@@ -277,6 +284,7 @@ private extension HomeViewController {
     func deleteCell(indexPath: IndexPath) {
         birthdayDataMatrix[indexPath.section].remove(at: indexPath.row)
         deleteEmptyArraysIfExisted()
+        saveBirthdayList()
         tableView.reloadData()
         verifyIfThereIsValueOnTableView()
     }
