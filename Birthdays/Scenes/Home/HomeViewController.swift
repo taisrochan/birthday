@@ -230,7 +230,6 @@ extension HomeViewController: UITableViewDataSource {
             let nextYear = Date.now.year + 1
             let year = nextYear.asString
             newCell.pass(year: year)
-            //newCell.isUserInteractionEnabled = false
             cell = newCell
         } else {
             cell = tableView.dequeueReusableCell(withIdentifier: "birthdayCell", for: indexPath) as! CustomTableViewCell
