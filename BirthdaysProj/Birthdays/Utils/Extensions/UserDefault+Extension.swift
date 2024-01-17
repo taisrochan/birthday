@@ -42,24 +42,13 @@ extension UserDefaults {
 }
 
 extension UserDefaults {
-    func imageArray(forKey key: String) -> [UIImage]? {
-        guard let array = self.array(forKey: key) as? [Data] else {
+    func imageArray(forKey key: String) -> [String]? {
+        guard let array = self.array(forKey: key) as? [String] else {
             return nil
         }
         let imageArray = array.compactMap({
-            UIImage(data: $0)
+            string(forKey: $0)
         })
         return imageArray
     }
-
-    func set(_ imageArray: [UIImage], forKey key: String) {
-        var imageDataArray = [Data]()
-        imageArray.forEach { image in
-            if let data = image.pngData() {
-                imageDataArray.append(data)
-            }
-        }
-        self.set(imageDataArray, forKey: key)
-    }
 }
-
