@@ -21,7 +21,7 @@ class CustomTableViewCell: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        birthdayNameLabel.textColor = .black
+        birthdayNameLabel.textColor = AppColors.descriptionLabel
     }
     
     func passData(day: Int, name: String) {

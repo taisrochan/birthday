@@ -85,7 +85,7 @@ class BirthdayDataManagerViewController: UIViewController {
         monthTextField.inputView = pickerView
         dayTextField.inputView = pickerView
         setupDoneButtonToolbar()
-        
+    
     }
     
     @objc func longPressed(sender: UILongPressGestureRecognizer) {
@@ -113,7 +113,6 @@ class BirthdayDataManagerViewController: UIViewController {
             addPhotoButton3.setImage(image, for: .normal)
             addPhotoButton3.tintColor = .red
         }
-        
     }
     
     func configScreenIfIsEditingBirthday() {
@@ -135,6 +134,7 @@ class BirthdayDataManagerViewController: UIViewController {
         let monthShortString = birthDayModel.month.asString
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MM"
+        dateFormatter.locale = Locale(identifier: "pt_BR")
         guard let monthAsDate = dateFormatter.date(from: monthShortString) else {
             return
         }
@@ -157,25 +157,36 @@ class BirthdayDataManagerViewController: UIViewController {
         dayTextField.isEnabled = isEditing
         monthTextField.isEnabled = isEditing
         saveButton.isEnabled = isEditing
-
+        
     }
     
     func getPicture() {
-        if let model = birthdayModel {
-            let imagesFromUserDefaults = UserDefaults.standard.imageArray(forKey: model.identifier) ?? []
-            if imagesFromUserDefaults.indices.contains(0) {
-                addPhotoOneImageView.image = imagesFromUserDefaults[0]
-                addPhotoOneImageView.contentMode = .scaleAspectFill
+        images = []
+        if let model = birthdayModel,
+           let fileNameImagesArray = UserDefaults.standard.array(forKey: model.identifier) as? [String]
+         {
+            
+            if fileNameImagesArray.indices.contains(0) {
+                loadImageAndSet(imageFileName: fileNameImagesArray[0], imageView: addPhotoOneImageView)
             }
-            if imagesFromUserDefaults.indices.contains(1) {
-                addPhotoTwoImageView.image = imagesFromUserDefaults[1]
-                addPhotoTwoImageView.contentMode = .scaleAspectFill
+            if fileNameImagesArray.indices.contains(1) {
+                loadImageAndSet(imageFileName: fileNameImagesArray[1], imageView: addPhotoTwoImageView)
             }
-            if imagesFromUserDefaults.indices.contains(2) {
-                addPhotoThreeImageView.image = imagesFromUserDefaults[2]
-                addPhotoThreeImageView.contentMode = .scaleAspectFill
+            if fileNameImagesArray.indices.contains(2) {
+                loadImageAndSet(imageFileName: fileNameImagesArray[2], imageView: addPhotoThreeImageView)
             }
-            images = imagesFromUserDefaults
+        }
+
+    }
+    
+    func loadImageAndSet(imageFileName: String, imageView: UIImageView) {
+        let url = getDocumentsDirectory().appendingPathComponent(imageFileName)
+        if let image = UIImage(contentsOfFile: url.path ) {
+            imageView.image = image
+            imageView.contentMode = .scaleAspectFill
+            images.append(image)
+        } else {
+            print("Erro ao carregar imagem")
         }
     }
     
@@ -204,10 +215,9 @@ class BirthdayDataManagerViewController: UIViewController {
               let monthNumber = DateValuesProvider.monthsToNumber[monthString] else {
             return
         }
-        
-        let imagesToSave = images.compactMap { $0 }
+        let stringsToSave = saveImagesToFileManager()
         if let model = birthdayModel {
-            UserDefaults.standard.set(imagesToSave, forKey: model.identifier)
+            UserDefaults.standard.set(stringsToSave, forKey: model.identifier)
             delegate?.editBirthdayInfo(name: name,
                                        day: day,
                                        id: model.identifier,
@@ -218,10 +228,41 @@ class BirthdayDataManagerViewController: UIViewController {
                                        day: day,
                                        id: id,
                                        month: monthNumber)
-            UserDefaults.standard.set(imagesToSave, forKey: id)
+            UserDefaults.standard.set(stringsToSave, forKey: id)
         }
         
         navigationController?.popViewController(animated: true)
+    }
+    
+    func saveImagesToFileManager() -> [String] {
+        var imagesFileName: [String] = []
+        
+        images.forEach { image in
+            let randomString = generateRandomString(length: 10)
+            if let data = image?.pngData() {
+                let fileName = "\(randomString).png"
+                imagesFileName.append(fileName)
+                let fileURL = getDocumentsDirectory().appendingPathComponent(fileName)
+                do {
+                    try data.write(to: fileURL)
+                    print("Sucesso! Imagem salva no File Manager: \(fileURL.path)")
+                } catch {
+                    print("Erro ao escrever a imagem no arquivo: \(error)")
+                }
+            }
+        }
+        return imagesFileName
+    }
+    
+    func generateRandomString(length: Int) -> String {
+        let characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        let randomString = String((0..<length).map { _ in characters.randomElement()! })
+        return randomString
+    }
+    
+    func getDocumentsDirectory() -> URL {
+        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        return paths[0]
     }
     
     @objc func doneButtonPressed() {
@@ -342,7 +383,6 @@ extension BirthdayDataManagerViewController: UIPickerViewDataSource {
         }
     }
     
-    
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         if component == 0 {
             return DateValuesProvider.months[row]
@@ -351,7 +391,6 @@ extension BirthdayDataManagerViewController: UIPickerViewDataSource {
         }
     }
 }
-
 
 extension BirthdayDataManagerViewController: UIPickerViewDelegate {
     
@@ -419,5 +458,3 @@ private extension BirthdayDataManagerViewController {
         }
     }
 }
-
-
