@@ -158,15 +158,17 @@ class HomeViewController: UIViewController {
         }
         let currentMonth = Date.now.month
         let lastMonth = birthdayDataMatrix[lastIndice][0].month
-        let thereIsMonthBiggerThanCurrentMonth = lastMonth > currentMonth
+        let thereIsMonthBiggerThanCurrentMonth = lastMonth >= currentMonth
         let firstMonth = birthdayDataMatrix[0][0].month
         let thereIsMonthSmallerThanCurrentMonth = currentMonth > firstMonth
         let shouldAddYearCell = thereIsMonthBiggerThanCurrentMonth && thereIsMonthSmallerThanCurrentMonth
         if shouldAddYearCell {
             birthdayDataMatrix[lastIndice].append(yearDivisorModel)
+            
         }
     }
 }
+
 extension HomeViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let isDivisor = birthdayDataMatrix[indexPath.section][indexPath.row].isDivisor
@@ -297,8 +299,8 @@ private extension HomeViewController {
     func deleteCell(indexPath: IndexPath) {
         birthdayDataMatrix[indexPath.section].remove(at: indexPath.row)
         deleteEmptyArraysIfExisted()
-        manageNextYearCell()
         saveBirthdayList()
+        sortMonthsAndBirthdays()
         tableView.reloadData()
         verifyIfThereIsValueOnTableView()
     }
