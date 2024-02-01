@@ -35,6 +35,9 @@ class BirthdayDataManagerViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    var isThereImageAtImageViewOne = false
+    var isThereImageAtImageViewTwo = false
+    var isThereImageAtImageViewThree = false
     var didClickButtonEdit = false
     var pickerView = UIPickerView()
     var delegate: BirthdayDataViewControllerDelegate?
@@ -69,14 +72,7 @@ class BirthdayDataManagerViewController: UIViewController {
         [addPhotoOneImageView, addPhotoTwoImageView, addPhotoThreeImageView].forEach { imageView in
             imageView.contentMode = .scaleAspectFit
             imageView.layer.cornerRadius = 10
-        }
-        
-        [addPhotoButton1, addPhotoButton2, addPhotoButton3].forEach {
-            
-            let longPressRecognizer = UILongPressGestureRecognizer(target: self,
-                                                                   action: #selector(longPressed))
-            $0?.addGestureRecognizer(longPressRecognizer)
-            
+            imageView.isUserInteractionEnabled = true
         }
         
         configScreenIfIsEditingBirthday()
@@ -85,7 +81,7 @@ class BirthdayDataManagerViewController: UIViewController {
         monthTextField.inputView = pickerView
         dayTextField.inputView = pickerView
         setupDoneButtonToolbar()
-    
+        
     }
     
     @objc func longPressed(sender: UILongPressGestureRecognizer) {
@@ -128,6 +124,8 @@ class BirthdayDataManagerViewController: UIViewController {
         birthdayLabel.text = "Dados de Aniversário"
         
         getPicture()
+        
+        
     }
     
     func fillBirthdayInfos(birthDayModel: BirthdayListModel) {
@@ -151,6 +149,15 @@ class BirthdayDataManagerViewController: UIViewController {
         updateUIForEditingBirthday(true)
     }
     
+    func setupEditButtonGesture() {
+        guard didClickButtonEdit else { return }
+        
+        [addPhotoButton1, addPhotoButton2, addPhotoButton3].forEach {
+            let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(longPressed))
+            $0?.addGestureRecognizer(longPressRecognizer)
+        }
+    }
+    
     func updateUIForEditingBirthday(_ isEditing: Bool) {
         saveButton.backgroundColor = isEditing ? .orange : .gray
         personTextField.isEnabled = isEditing
@@ -158,25 +165,29 @@ class BirthdayDataManagerViewController: UIViewController {
         monthTextField.isEnabled = isEditing
         saveButton.isEnabled = isEditing
         
+        setupEditButtonGesture()
+        
     }
     
     func getPicture() {
         images = []
         if let model = birthdayModel,
            let fileNameImagesArray = UserDefaults.standard.array(forKey: model.identifier) as? [String]
-         {
-            
+        {
             if fileNameImagesArray.indices.contains(0) {
                 loadImageAndSet(imageFileName: fileNameImagesArray[0], imageView: addPhotoOneImageView)
+                isThereImageAtImageViewOne = true
             }
             if fileNameImagesArray.indices.contains(1) {
                 loadImageAndSet(imageFileName: fileNameImagesArray[1], imageView: addPhotoTwoImageView)
+                isThereImageAtImageViewTwo = true
             }
             if fileNameImagesArray.indices.contains(2) {
                 loadImageAndSet(imageFileName: fileNameImagesArray[2], imageView: addPhotoThreeImageView)
+                isThereImageAtImageViewThree = true
             }
         }
-
+        
     }
     
     func loadImageAndSet(imageFileName: String, imageView: UIImageView) {
@@ -338,22 +349,60 @@ class BirthdayDataManagerViewController: UIViewController {
     func deleteImage(button: UIButton) {
         button.setImage(nil, for: .normal)
         button.tintColor = .clear
+        button.isEnabled = true
         switch button {
         case addPhotoButton1:
-            resetImageView(index: 0, imageView: addPhotoOneImageView)
+            isThereImageAtImageViewOne = false
+            resetImageViewAndRemoveImage(index: 0, imageView: addPhotoOneImageView)
         case addPhotoButton2:
-            resetImageView(index: 1, imageView: addPhotoTwoImageView)
+            isThereImageAtImageViewTwo = false
+            resetImageViewAndRemoveImage(index: 1, imageView: addPhotoTwoImageView)
         case addPhotoButton3:
-            resetImageView(index: 2, imageView: addPhotoThreeImageView)
+            isThereImageAtImageViewThree = false
+            resetImageViewAndRemoveImage(index: 2, imageView: addPhotoThreeImageView)
         default: break
         }
     }
     
-    func resetImageView(index: Int, imageView: UIImageView) {
+    func resetImageViewAndRemoveImage(index: Int, imageView: UIImageView) {
         let image = UIImage.init(systemName: "plus.app.fill")
-        images[index] = nil
+        images.remove(at: index)
         imageView.image = image
         imageView.contentMode = .scaleAspectFit
+        imageView.alpha = 1.0
+        rearrangeImagesWhenDeleted()
+        
+    }
+    
+    func resetImageView(imageView: UIImageView) {
+        let image = UIImage.init(systemName: "plus.app.fill")
+        imageView.image = image
+        imageView.contentMode = .scaleAspectFit
+        imageView.alpha = 1.0
+    }
+    
+    func configImageAfterRearranged(imageView: UIImageView) {
+        imageView.contentMode = .scaleAspectFill
+        imageView.layer.cornerRadius = 10
+        imageView.isUserInteractionEnabled = true
+    }
+    
+    func rearrangeImagesWhenDeleted() {
+        if isThereImageAtImageViewOne == false && isThereImageAtImageViewTwo == true {
+            addPhotoOneImageView.image = addPhotoTwoImageView.image
+            isThereImageAtImageViewTwo = false
+            resetImageView(imageView: addPhotoTwoImageView)
+            isThereImageAtImageViewOne = true
+            configImageAfterRearranged(imageView: addPhotoOneImageView)
+        }
+        
+        if isThereImageAtImageViewTwo == false && isThereImageAtImageViewThree == true {
+            addPhotoTwoImageView.image = addPhotoThreeImageView.image
+            isThereImageAtImageViewThree = false
+            resetImageView(imageView: addPhotoThreeImageView)
+            isThereImageAtImageViewTwo = true
+            configImageAfterRearranged(imageView: addPhotoTwoImageView)
+        }
     }
 }
 
@@ -419,12 +468,15 @@ extension BirthdayDataManagerViewController: UIImagePickerControllerDelegate, UI
         if images.count == 0 {
             addPhotoOneImageView.image = image
             addPhotoOneImageView.contentMode = .scaleAspectFill
+            isThereImageAtImageViewOne = true
         } else if images.count == 1 {
             addPhotoTwoImageView.image = image
             addPhotoTwoImageView.contentMode = .scaleAspectFill
+            isThereImageAtImageViewTwo = true
         } else if images.count == 2 {
             addPhotoThreeImageView.image = image
             addPhotoThreeImageView.contentMode = .scaleAspectFill
+            isThereImageAtImageViewThree = true
         }
         images.append(image)
         
