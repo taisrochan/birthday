@@ -18,7 +18,7 @@
                 <outlet property="addPhotoTwoImageView" destination="eoW-rf-SaP" id="McC-E4-rgi"/>
                 <outlet property="birthdayLabel" destination="laQ-jd-kMv" id="48E-mm-Irz"/>
                 <outlet property="dayTextField" destination="88i-Io-MVa" id="ngB-uN-1L7"/>
-                <outlet property="monthTextField" destination="oMC-hy-aL0" id="gtB-eO-Pqh"/>
+                <outlet property="monthTextField" destination="oMC-hy-aL0" id="rOj-vY-FrP"/>
                 <outlet property="personTextField" destination="nvY-bn-KWQ" id="4m3-sE-ToI"/>
                 <outlet property="saveButton" destination="UGe-sw-K3u" id="PJw-C5-2YO"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
@@ -69,7 +69,7 @@
                 </label>
                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="plus.app.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="DF7-1Y-trb">
                     <rect key="frame" x="16" y="369.5" width="104.5" height="122.5"/>
-                    <color key="tintColor" systemColor="systemGray3Color"/>
+                    <color key="tintColor" systemColor="systemGrayColor"/>
                     <constraints>
                         <constraint firstAttribute="width" secondItem="DF7-1Y-trb" secondAttribute="height" multiplier="4:5" priority="750" id="0it-BH-5vP"/>
                         <constraint firstAttribute="height" relation="lessThanOrEqual" constant="125" id="71M-qq-OPD"/>
@@ -77,21 +77,12 @@
                 </imageView>
                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="plus.app.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="eoW-rf-SaP">
                     <rect key="frame" x="135.5" y="369.5" width="104" height="122.5"/>
-                    <color key="tintColor" systemColor="systemGray3Color"/>
+                    <color key="tintColor" systemColor="systemGrayColor"/>
                 </imageView>
                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="plus.app.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="u8X-qO-gTl">
                     <rect key="frame" x="254.5" y="369.5" width="104.5" height="122.5"/>
-                    <color key="tintColor" systemColor="systemGray3Color"/>
+                    <color key="tintColor" systemColor="systemGrayColor"/>
                 </imageView>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kRm-KK-snF">
-                    <rect key="frame" x="16" y="368.5" width="104.5" height="125"/>
-                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                    <state key="normal" title="Button"/>
-                    <buttonConfiguration key="configuration" style="plain"/>
-                    <connections>
-                        <action selector="configImageAction:" destination="-1" eventType="touchUpInside" id="uRo-TF-DPl"/>
-                    </connections>
-                </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="01o-ft-ha7">
                     <rect key="frame" x="135.5" y="368.5" width="104" height="125"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -124,6 +115,15 @@
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <textInputTraits key="textInputTraits"/>
                 </textField>
+                <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kRm-KK-snF">
+                    <rect key="frame" x="16" y="380" width="104.5" height="125"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <state key="normal" title="Button"/>
+                    <buttonConfiguration key="configuration" style="plain"/>
+                    <connections>
+                        <action selector="configImageAction:" destination="-1" eventType="touchUpInside" id="uRo-TF-DPl"/>
+                    </connections>
+                </button>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -170,7 +170,7 @@
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="88i-Io-MVa" secondAttribute="trailing" constant="16" id="uia-EB-afp"/>
                 <constraint firstItem="eoW-rf-SaP" firstAttribute="height" secondItem="DF7-1Y-trb" secondAttribute="height" id="yPf-4j-z2q"/>
             </constraints>
-            <point key="canvasLocation" x="-16.744186046511629" y="-13.519313304721031"/>
+            <point key="canvasLocation" x="-16.800000000000001" y="-13.943028485757123"/>
         </view>
     </objects>
     <resources>
@@ -178,8 +178,8 @@
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
-        <systemColor name="systemGray3Color">
-            <color red="0.7803921568627451" green="0.7803921568627451" blue="0.80000000000000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        <systemColor name="systemGrayColor">
+            <color red="0.55686274509803924" green="0.55686274509803924" blue="0.57647058823529407" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemOrangeColor">
             <color red="1" green="0.58431372549019611" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

@@ -51,7 +51,7 @@ class HomeViewController: UIViewController {
                                                             target: self,
                                                             action: #selector(buttonPressed))
         navigationItem.rightBarButtonItem?.tintColor = .orange
-        navigationController?.navigationBar.tintColor = .blue
+        navigationController?.navigationBar.tintColor = .orange
     }
     
     func fetchBirthdayData() {
