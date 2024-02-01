@@ -24,6 +24,8 @@ class BirthdayDataManagerViewController: UIViewController {
     @IBOutlet weak var addPhotoButton2: UIButton!
     @IBOutlet weak var addPhotoButton1: UIButton!
     @IBOutlet weak var birthdayLabel: UILabel!
+
+    
     
     init(birthdayModel: BirthdayListModel? = nil) {
         self.birthdayModel = birthdayModel
@@ -74,6 +76,7 @@ class BirthdayDataManagerViewController: UIViewController {
             imageView.layer.cornerRadius = 10
             imageView.isUserInteractionEnabled = true
         }
+ 
         
         configScreenIfIsEditingBirthday()
         pickerView.dataSource = self
@@ -81,7 +84,8 @@ class BirthdayDataManagerViewController: UIViewController {
         monthTextField.inputView = pickerView
         dayTextField.inputView = pickerView
         setupDoneButtonToolbar()
-        
+        configPlaceHolder()
+        configTextFieldBorderColor()
     }
     
     @objc func longPressed(sender: UILongPressGestureRecognizer) {
@@ -109,6 +113,27 @@ class BirthdayDataManagerViewController: UIViewController {
             addPhotoButton3.setImage(image, for: .normal)
             addPhotoButton3.tintColor = .red
         }
+    }
+    
+    func configTextFieldBorderColor() {
+        let myColor = UIColor.systemOrange
+        personTextField.layer.borderColor = myColor.cgColor
+        personTextField.layer.borderWidth = 0.5
+        monthTextField.layer.borderColor = myColor.cgColor
+        monthTextField.layer.borderWidth = 0.5
+        dayTextField.layer.borderColor = myColor.cgColor
+        dayTextField.layer.borderWidth = 0.5
+    }
+    
+    func configPlaceHolder() {
+        let placeholderAttributes: [NSAttributedString.Key: Any] = [
+            .foregroundColor: AppColors.descriptionPlaceHolder ]
+        let attributedMonthPlaceholder = NSAttributedString(string: "Mês", attributes: placeholderAttributes)
+        let attributedDayPlaceholder = NSAttributedString(string: "Dia", attributes: placeholderAttributes)
+        let attributedPersonPlaceholder = NSAttributedString(string: "Aniversariante", attributes: placeholderAttributes)
+        monthTextField.attributedPlaceholder = attributedMonthPlaceholder
+        dayTextField.attributedPlaceholder = attributedDayPlaceholder
+        personTextField.attributedPlaceholder = attributedPersonPlaceholder
     }
     
     func configScreenIfIsEditingBirthday() {
@@ -287,6 +312,7 @@ class BirthdayDataManagerViewController: UIViewController {
         let doneToolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: view.frame.size.width, height: 44))
         let doneButton = UIBarButtonItem(title: "Pronto", style: .done, target: self, action: #selector(doneButtonPressed))
         let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        doneButton.tintColor = .systemOrange
         
         doneToolbar.items = [flexSpace, doneButton]
         

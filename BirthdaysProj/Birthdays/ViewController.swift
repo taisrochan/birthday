@@ -13,8 +13,6 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
     }
-
-
 }
 
 enum AppColors {
@@ -25,6 +23,17 @@ enum AppColors {
                 return UIColor.white
             default:
                 return UIColor.black
+            }
+        }
+    }
+    
+    static var descriptionPlaceHolder: UIColor {
+        return UIColor { traitCollection in
+            switch traitCollection.userInterfaceStyle {
+            case .dark:
+                return UIColor.lightGray
+            default:
+                return UIColor.darkGray
             }
         }
     }
