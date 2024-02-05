@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8F440CE62ADDFF81004A9E0D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F440CE52ADDFF81004A9E0D /* ViewController.swift */; };
 		8F440CF82ADE0044004A9E0D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F440CF52ADE0044004A9E0D /* SceneDelegate.swift */; };
 		8F440CFA2ADE0044004A9E0D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F440CF72ADE0044004A9E0D /* AppDelegate.swift */; };
 		8F440CFD2ADE0092004A9E0D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8F440CFC2ADE0092004A9E0D /* Assets.xcassets */; };
@@ -28,11 +27,12 @@
 		8F440D262ADE014B004A9E0D /* ImageScreenViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8F440D242ADE014B004A9E0D /* ImageScreenViewController.xib */; };
 		8F440D292ADE0151004A9E0D /* WelcomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F440D272ADE0151004A9E0D /* WelcomeViewController.swift */; };
 		8F440D2A2ADE0151004A9E0D /* WelcomeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8F440D282ADE0151004A9E0D /* WelcomeViewController.xib */; };
+		A44E576B2AEFFFFA00355360 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A44E576A2AEFFFFA00355360 /* LaunchScreen.storyboard */; };
+		A487DC652B710728002011A8 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = A487DC642B710728002011A8 /* Colors.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		8F440CDE2ADDFF81004A9E0D /* Birthdays.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Birthdays.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		8F440CE52ADDFF81004A9E0D /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		8F440CF52ADE0044004A9E0D /* SceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		8F440CF62ADE0044004A9E0D /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8F440CF72ADE0044004A9E0D /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -54,6 +54,8 @@
 		8F440D242ADE014B004A9E0D /* ImageScreenViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ImageScreenViewController.xib; sourceTree = "<group>"; };
 		8F440D272ADE0151004A9E0D /* WelcomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WelcomeViewController.swift; sourceTree = "<group>"; };
 		8F440D282ADE0151004A9E0D /* WelcomeViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = WelcomeViewController.xib; sourceTree = "<group>"; };
+		A44E576A2AEFFFFA00355360 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		A487DC642B710728002011A8 /* Colors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -86,14 +88,10 @@
 		8F440CE02ADDFF81004A9E0D /* Birthdays */ = {
 			isa = PBXGroup;
 			children = (
+				A44E57692AEFFFB700355360 /* Infrastructure */,
 				8F440D002ADE00AE004A9E0D /* Models */,
 				8F440CFF2ADE00A8004A9E0D /* Scenes */,
 				8F440CFE2ADE00A1004A9E0D /* Utils */,
-				8F440CE52ADDFF81004A9E0D /* ViewController.swift */,
-				8F440CF72ADE0044004A9E0D /* AppDelegate.swift */,
-				8F440CF62ADE0044004A9E0D /* Info.plist */,
-				8F440CF52ADE0044004A9E0D /* SceneDelegate.swift */,
-				8F440CFC2ADE0092004A9E0D /* Assets.xcassets */,
 			);
 			path = Birthdays;
 			sourceTree = "<group>";
@@ -129,6 +127,7 @@
 		8F440D012ADE00C1004A9E0D /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				A487DC642B710728002011A8 /* Colors.swift */,
 				8F440D042ADE00DB004A9E0D /* Date+Extensions.swift */,
 				8F440D052ADE00DB004A9E0D /* UIApplication+extensions.swift */,
 				8F440D062ADE00DB004A9E0D /* UserDefault+Extension.swift */,
@@ -200,6 +199,18 @@
 			path = YearCell;
 			sourceTree = "<group>";
 		};
+		A44E57692AEFFFB700355360 /* Infrastructure */ = {
+			isa = PBXGroup;
+			children = (
+				8F440CF72ADE0044004A9E0D /* AppDelegate.swift */,
+				8F440CF62ADE0044004A9E0D /* Info.plist */,
+				8F440CF52ADE0044004A9E0D /* SceneDelegate.swift */,
+				8F440CFC2ADE0092004A9E0D /* Assets.xcassets */,
+				A44E576A2AEFFFFA00355360 /* LaunchScreen.storyboard */,
+			);
+			path = Infrastructure;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -259,6 +270,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8F440D262ADE014B004A9E0D /* ImageScreenViewController.xib in Resources */,
+				A44E576B2AEFFFFA00355360 /* LaunchScreen.storyboard in Resources */,
 				8F440D122ADE0115004A9E0D /* BirthdayDataManagerViewController.xib in Resources */,
 				8F440CFD2ADE0092004A9E0D /* Assets.xcassets in Resources */,
 				8F440D222ADE0141004A9E0D /* CustomTableViewCell.xib in Resources */,
@@ -277,8 +289,8 @@
 			files = (
 				8F440D032ADE00C8004A9E0D /* DateValuesProvider.swift in Sources */,
 				8F440CFA2ADE0044004A9E0D /* AppDelegate.swift in Sources */,
-				8F440CE62ADDFF81004A9E0D /* ViewController.swift in Sources */,
 				8F440D252ADE014B004A9E0D /* ImageScreenViewController.swift in Sources */,
+				A487DC652B710728002011A8 /* Colors.swift in Sources */,
 				8F440D072ADE00DB004A9E0D /* Date+Extensions.swift in Sources */,
 				8F440D092ADE00DB004A9E0D /* UserDefault+Extension.swift in Sources */,
 				8F440D162ADE011D004A9E0D /* HomeViewController.swift in Sources */,
@@ -414,11 +426,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 6P7YL4PD82;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = UPWZ424KCL;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Birthdays/Info.plist;
+				INFOPLIST_FILE = Birthdays/Infrastructure/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "BDay List";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -430,8 +445,10 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.taisrocha.Birthdays;
+				PRODUCT_BUNDLE_IDENTIFIER = com.pedroandtais.Birthdays;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "birthday-ios-distribution";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -443,11 +460,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Bruno Alves (UPWZ424KCL)";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 6P7YL4PD82;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = UPWZ424KCL;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Birthdays/Info.plist;
+				INFOPLIST_FILE = Birthdays/Infrastructure/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "BDay List";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -459,8 +479,10 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.taisrocha.Birthdays;
+				PRODUCT_BUNDLE_IDENTIFIER = com.pedroandtais.Birthdays;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "birthday-ios-distribution";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
