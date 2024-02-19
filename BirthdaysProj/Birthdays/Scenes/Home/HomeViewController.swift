@@ -218,6 +218,7 @@ extension HomeViewController: UITableViewDataSource {
         
         let nameMonthFormatter = DateFormatter()
         nameMonthFormatter.dateFormat = "MMMM"
+        nameMonthFormatter.locale = Locale(identifier: "pt_BR")
         let title = nameMonthFormatter.string(from: date)
         
         return title.capitalized
