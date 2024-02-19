@@ -24,7 +24,7 @@ class BirthdayDataManagerViewController: UIViewController {
     @IBOutlet weak var addPhotoButton2: UIButton!
     @IBOutlet weak var addPhotoButton1: UIButton!
     @IBOutlet weak var birthdayLabel: UILabel!
-
+    
     
     
     init(birthdayModel: BirthdayListModel? = nil) {
@@ -58,6 +58,7 @@ class BirthdayDataManagerViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        personTextField.returnKeyType = .next
         saveButton.backgroundColor = .orange
         saveButton.isEnabled = false
         saveButton.setTitleColor(.white, for: .normal)
@@ -67,16 +68,22 @@ class BirthdayDataManagerViewController: UIViewController {
                                   for: .editingChanged)
         
         monthTextField.rightView?.largeContentImage = .add
+        personTextField.becomeFirstResponder()
         
-        _ = UITapGestureRecognizer(target: self,
-                                   action: #selector(closeKeyboard))
+        let tapGesture = UITapGestureRecognizer(target: self,
+                                                action: #selector(closeKeyboard))
+        view.addGestureRecognizer(tapGesture)
+                                                
         
         [addPhotoOneImageView, addPhotoTwoImageView, addPhotoThreeImageView].forEach { imageView in
             imageView.contentMode = .scaleAspectFit
             imageView.layer.cornerRadius = 10
             imageView.isUserInteractionEnabled = true
         }
- 
+        
+        [personTextField, monthTextField, dayTextField].forEach { textField in
+            textField?.delegate = self
+        }
         
         configScreenIfIsEditingBirthday()
         pickerView.dataSource = self
@@ -86,6 +93,11 @@ class BirthdayDataManagerViewController: UIViewController {
         setupDoneButtonToolbar()
         configPlaceHolder()
         configTextFieldBorderColor()
+    }
+    
+    
+    @objc func closeKeyboard() {
+        view.endEditing(true)
     }
     
     @objc func longPressed(sender: UILongPressGestureRecognizer) {
@@ -225,11 +237,7 @@ class BirthdayDataManagerViewController: UIViewController {
             print("Erro ao carregar imagem")
         }
     }
-    
-    @objc
-    func closeKeyboard() {
-        view.endEditing(true)
-    }
+   
     
     @objc
     func textFieldDidChange(_ textField: UITextField) {
@@ -536,3 +544,13 @@ private extension BirthdayDataManagerViewController {
         }
     }
 }
+
+extension BirthdayDataManagerViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if textField == personTextField {
+            monthTextField.becomeFirstResponder()
+        }
+        return true
+    }
+}
+
