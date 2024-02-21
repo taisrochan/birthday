@@ -27,6 +27,12 @@
 		8F440D262ADE014B004A9E0D /* ImageScreenViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8F440D242ADE014B004A9E0D /* ImageScreenViewController.xib */; };
 		8F440D292ADE0151004A9E0D /* WelcomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F440D272ADE0151004A9E0D /* WelcomeViewController.swift */; };
 		8F440D2A2ADE0151004A9E0D /* WelcomeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8F440D282ADE0151004A9E0D /* WelcomeViewController.xib */; };
+		8F9430782B868FB4007C9CF1 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F9430772B868FB4007C9CF1 /* HomeViewModel.swift */; };
+		8F94307A2B8690AA007C9CF1 /* HomeCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F9430792B8690AA007C9CF1 /* HomeCoordinator.swift */; };
+		8F94307C2B8690B5007C9CF1 /* HomeFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F94307B2B8690B5007C9CF1 /* HomeFactory.swift */; };
+		8F94307E2B8690E6007C9CF1 /* BirthdayDataManagerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F94307D2B8690E6007C9CF1 /* BirthdayDataManagerViewModel.swift */; };
+		8F9430802B869147007C9CF1 /* BirthdayDataManagerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F94307F2B869147007C9CF1 /* BirthdayDataManagerFactory.swift */; };
+		8F9430822B869163007C9CF1 /* BirthdayDataManagerCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F9430812B869163007C9CF1 /* BirthdayDataManagerCoordinator.swift */; };
 		A44E576B2AEFFFFA00355360 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A44E576A2AEFFFFA00355360 /* LaunchScreen.storyboard */; };
 		A487DC652B710728002011A8 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = A487DC642B710728002011A8 /* Colors.swift */; };
 /* End PBXBuildFile section */
@@ -54,6 +60,12 @@
 		8F440D242ADE014B004A9E0D /* ImageScreenViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ImageScreenViewController.xib; sourceTree = "<group>"; };
 		8F440D272ADE0151004A9E0D /* WelcomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WelcomeViewController.swift; sourceTree = "<group>"; };
 		8F440D282ADE0151004A9E0D /* WelcomeViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = WelcomeViewController.xib; sourceTree = "<group>"; };
+		8F9430772B868FB4007C9CF1 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		8F9430792B8690AA007C9CF1 /* HomeCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCoordinator.swift; sourceTree = "<group>"; };
+		8F94307B2B8690B5007C9CF1 /* HomeFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeFactory.swift; sourceTree = "<group>"; };
+		8F94307D2B8690E6007C9CF1 /* BirthdayDataManagerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BirthdayDataManagerViewModel.swift; sourceTree = "<group>"; };
+		8F94307F2B869147007C9CF1 /* BirthdayDataManagerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BirthdayDataManagerFactory.swift; sourceTree = "<group>"; };
+		8F9430812B869163007C9CF1 /* BirthdayDataManagerCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BirthdayDataManagerCoordinator.swift; sourceTree = "<group>"; };
 		A44E576A2AEFFFFA00355360 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A487DC642B710728002011A8 /* Colors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -141,6 +153,9 @@
 				8F440D182ADE0121004A9E0D /* Cells */,
 				8F440D142ADE011D004A9E0D /* HomeViewController.swift */,
 				8F440D152ADE011D004A9E0D /* HomeViewController.xib */,
+				8F9430772B868FB4007C9CF1 /* HomeViewModel.swift */,
+				8F9430792B8690AA007C9CF1 /* HomeCoordinator.swift */,
+				8F94307B2B8690B5007C9CF1 /* HomeFactory.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -168,6 +183,9 @@
 			children = (
 				8F440D112ADE0115004A9E0D /* BirthdayDataManagerViewController.swift */,
 				8F440D102ADE0115004A9E0D /* BirthdayDataManagerViewController.xib */,
+				8F94307D2B8690E6007C9CF1 /* BirthdayDataManagerViewModel.swift */,
+				8F94307F2B869147007C9CF1 /* BirthdayDataManagerFactory.swift */,
+				8F9430812B869163007C9CF1 /* BirthdayDataManagerCoordinator.swift */,
 			);
 			path = BirthdayData;
 			sourceTree = "<group>";
@@ -292,15 +310,21 @@
 				8F440D252ADE014B004A9E0D /* ImageScreenViewController.swift in Sources */,
 				A487DC652B710728002011A8 /* Colors.swift in Sources */,
 				8F440D072ADE00DB004A9E0D /* Date+Extensions.swift in Sources */,
+				8F9430802B869147007C9CF1 /* BirthdayDataManagerFactory.swift in Sources */,
+				8F94307E2B8690E6007C9CF1 /* BirthdayDataManagerViewModel.swift in Sources */,
 				8F440D092ADE00DB004A9E0D /* UserDefault+Extension.swift in Sources */,
 				8F440D162ADE011D004A9E0D /* HomeViewController.swift in Sources */,
 				8F440D212ADE0141004A9E0D /* CustomTableViewCell.swift in Sources */,
 				8F440D082ADE00DB004A9E0D /* UIApplication+extensions.swift in Sources */,
+				8F94307C2B8690B5007C9CF1 /* HomeFactory.swift in Sources */,
 				8F440D1D2ADE013A004A9E0D /* YearDivisorTableViewCell.swift in Sources */,
 				8F440D132ADE0115004A9E0D /* BirthdayDataManagerViewController.swift in Sources */,
 				8F440D0B2ADE00EC004A9E0D /* BirthdayListModel.swift in Sources */,
 				8F440CF82ADE0044004A9E0D /* SceneDelegate.swift in Sources */,
+				8F94307A2B8690AA007C9CF1 /* HomeCoordinator.swift in Sources */,
+				8F9430782B868FB4007C9CF1 /* HomeViewModel.swift in Sources */,
 				8F440D292ADE0151004A9E0D /* WelcomeViewController.swift in Sources */,
+				8F9430822B869163007C9CF1 /* BirthdayDataManagerCoordinator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

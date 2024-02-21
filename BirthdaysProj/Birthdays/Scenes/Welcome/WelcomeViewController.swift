@@ -30,9 +30,7 @@ class WelcomeViewController: UIViewController {
                           animations: nil,
                           completion: nil)
         
-        
-        
-        
+        // será q preciso criar outra parte pra esse codigo?
         
     }
     

@@ -12,6 +12,7 @@ class HomeViewController: UIViewController {
     
     let tableView = UITableView()
     var birthdayDataMatrix: [[BirthdayListModel]] = []
+    private let coordinator = HomeCoordinator()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,6 +22,7 @@ class HomeViewController: UIViewController {
         verifyIfThereIsValueOnTableView()
         fetchBirthdayData()
         sortMonthsAndBirthdays()
+        coordinator.viewController = self
     }
     
     override func viewDidLayoutSubviews() {
@@ -29,9 +31,7 @@ class HomeViewController: UIViewController {
     }
     
     @objc func  buttonPressed() {
-        let birthdayDataViewController = BirthdayDataManagerViewController()
-        navigationController?.pushViewController(birthdayDataViewController, animated: true)
-        birthdayDataViewController.delegate = self
+        coordinator.showAddBirthdayScreen()
     }
     
     func configTableView() {

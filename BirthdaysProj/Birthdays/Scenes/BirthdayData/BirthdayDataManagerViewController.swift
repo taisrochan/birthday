@@ -25,8 +25,6 @@ class BirthdayDataManagerViewController: UIViewController {
     @IBOutlet weak var addPhotoButton1: UIButton!
     @IBOutlet weak var birthdayLabel: UILabel!
     
-    
-    
     init(birthdayModel: BirthdayListModel? = nil) {
         self.birthdayModel = birthdayModel
         self.isEditingBirthday = birthdayModel != nil
